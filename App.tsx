@@ -34,7 +34,7 @@ import ProgressScreen from './src/screens/ProgressScreen';
 import MoreScreen from './src/screens/MoreScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
-
+import SignUpScreen from './src/screens/SignUpScreen';
 
 
 export default function App() {
@@ -58,8 +58,9 @@ export default function App() {
     switch (screen) {
       case "splash": return <SplashScreen onDone={() => setScreen("onboarding")} />;
       case "onboarding": return <OnboardingScreen onFinish={() => setScreen("welcome")} onSkip={() => setScreen("welcome")} />;
-      case "welcome": return <WelcomeScreen onStart={() => setScreen("dashboard")} />;
+      case "welcome": return <WelcomeScreen onNavigate={setScreen} />;
       case "dashboard": return <DashboardScreen onNavigate={setScreen} />;
+      case "signup": return <SignUpScreen onNavigate={setScreen} />;
       case "patients": return <PatientsScreen onNavigate={setScreen} />;
       case "patient-detail": return <PatientDetailScreen onNavigate={setScreen} />;
       case "programs": return <ProgramsScreen onNavigate={setScreen} />;

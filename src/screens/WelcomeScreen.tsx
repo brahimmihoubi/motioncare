@@ -10,7 +10,7 @@ import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function WelcomeScreen({ onStart }: { onStart: () => void }) {
+export default function WelcomeScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   return (
     <View style={[styles.splashContainer, { justifyContent: "space-between", paddingVertical: 50 }]}>
       {/* Decorative Circles */}
@@ -32,17 +32,19 @@ export default function WelcomeScreen({ onStart }: { onStart: () => void }) {
         </Text>
 
         <TouchableOpacity
-          onPress={onStart}
+          onPress={() => onNavigate("dashboard")}
           style={[styles.ctaBtn, { backgroundColor: "white", width: "100%", height: 52 }]}
           activeOpacity={0.8}
         >
           <Text style={[styles.ctaBtnText, { color: TEAL }]}>Get Started</Text>
         </TouchableOpacity>
 
-        <Text style={styles.welcomeSignIn}>
-          Already have an account?{" "}
-          <Text style={{ color: "white", fontFamily: "Poppins_700Bold" }}>Sign In</Text>
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
+          <Text style={styles.welcomeSignIn}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => onNavigate("signup")}>
+            <Text style={{ color: "white", fontFamily: "Poppins_700Bold", fontSize: 14 }}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

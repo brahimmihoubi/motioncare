@@ -12,4 +12,5 @@ export type Screen =
   | "progress"
   | "more"
   | "settings"
+  | "signup"
   | "notifications";
