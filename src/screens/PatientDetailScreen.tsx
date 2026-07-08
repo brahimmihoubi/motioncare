@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function PatientDetailScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
   const p = patients[0];
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -20,7 +20,7 @@ export default function PatientDetailScreen({ onNavigate }: { onNavigate: (s: Sc
         </TouchableOpacity>
         <Text style={styles.detailHeaderTitle}>Patient Details</Text>
         <TouchableOpacity style={styles.circleBtnSmall}>
-          <Edit3 size={16} color={TEAL} />
+          <Edit3 size={16} color={colors.teal} />
         </TouchableOpacity>
       </View>
 
@@ -63,7 +63,7 @@ export default function PatientDetailScreen({ onNavigate }: { onNavigate: (s: Sc
                 cy="18"
                 r="15"
                 fill="none"
-                stroke={TEAL}
+                stroke={colors.teal}
                 strokeWidth="3"
                 strokeDasharray={[2 * Math.PI * 15 * (p.completed / 100), 2 * Math.PI * 15]}
                 strokeLinecap="round"
@@ -120,7 +120,7 @@ export default function PatientDetailScreen({ onNavigate }: { onNavigate: (s: Sc
 
         <TouchableOpacity
           onPress={() => onNavigate("edit-program")}
-          style={[styles.ctaBtn, { backgroundColor: TEAL, marginVertical: 10 }]}
+          style={[styles.ctaBtn, { backgroundColor: colors.teal, marginVertical: 10 }]}
           activeOpacity={0.8}
         >
           <Text style={styles.ctaBtnText}>Edit Program</Text>

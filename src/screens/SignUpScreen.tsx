@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import { ChevronLeft, User, Mail, Lock, Building, FileCheck } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, BG_COLOR, TEAL_LIGHT } from '../theme/colors';
-import { styles as globalStyles } from '../theme/styles';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
+  const localStyles = getLocalStyles(colors);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +29,7 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
   };
 
   return (
-    <SafeAreaView style={globalStyles.safeContainerWhite}>
+    <SafeAreaView style={styles.safeContainerWhite}>
       <KeyboardAvoidingView 
         style={{ flex: 1 }} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -149,7 +150,7 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
   );
 }
 
-const localStyles = StyleSheet.create({
+const getLocalStyles = (colors: any) => StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingTop: 10,
@@ -159,7 +160,7 @@ const localStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: BG_COLOR,
+    backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -199,7 +200,7 @@ const localStyles = StyleSheet.create({
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: BG_COLOR,
+    backgroundColor: colors.background,
     borderRadius: 16,
     paddingHorizontal: 16,
     height: 56,
@@ -214,12 +215,12 @@ const localStyles = StyleSheet.create({
     color: "#1A1A2E",
   },
   submitButton: {
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     height: 56,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: TEAL,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,
     shadowRadius: 15,
@@ -243,7 +244,7 @@ const localStyles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
-    color: TEAL,
+    color: colors.teal,
     fontFamily: "Poppins_700Bold",
   }
 });

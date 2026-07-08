@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.appHeader}>
@@ -22,7 +22,7 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
           </View>
         </View>
         <TouchableOpacity style={styles.headerActionBtn} onPress={() => onNavigate('notifications')} activeOpacity={0.7}>
-          <Bell size={18} color={TEAL} />
+          <Bell size={18} color={colors.teal} />
           <View style={styles.badgeDot} />
         </TouchableOpacity>
       </View>
@@ -77,14 +77,14 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
                   style={[
                     styles.statusBadge,
                     {
-                      backgroundColor: p.status === "Active" ? TEAL_LIGHT : "#F0FFF4",
+                      backgroundColor: p.status === "Active" ? colors.tealLight : "#F0FFF4",
                     },
                   ]}
                 >
                   <Text
                     style={[
                       styles.statusBadgeText,
-                      { color: p.status === "Active" ? TEAL : "#4CAF50" },
+                      { color: p.status === "Active" ? colors.teal : "#4CAF50" },
                     ]}
                   >
                     {p.status}
@@ -98,7 +98,7 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
 
         <TouchableOpacity
           onPress={() => onNavigate("patients")}
-          style={[styles.ctaBtn, { marginVertical: 20, backgroundColor: TEAL }]}
+          style={[styles.ctaBtn, { marginVertical: 20, backgroundColor: colors.teal }]}
           activeOpacity={0.8}
         >
           <Text style={styles.ctaBtnText}>View All Patients</Text>

@@ -2,95 +2,96 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Switch } from 'react-native';
 import { ChevronLeft, ChevronRight, User, Lock, Bell, Globe, Moon, Ruler, HelpCircle, FileText, Shield, Trash2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function SettingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors, theme, toggleTheme } = useTheme();
+  const localStyles = getLocalStyles(colors);
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
 
   const SectionHeader = ({ title }: { title: string }) => (
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <Text style={localStyles.sectionTitle}>{title}</Text>
   );
 
   const SettingItem = ({ icon: Icon, label, value, isToggle, toggleValue, onToggle, isDestructive }: any) => (
     <TouchableOpacity 
-      style={styles.settingItem} 
+      style={localStyles.settingItem} 
       activeOpacity={isToggle ? 1 : 0.7}
       onPress={() => !isToggle && console.log(label)}
     >
-      <View style={[styles.iconContainer, isDestructive && { backgroundColor: '#FFF1F0' }]}>
-        <Icon size={18} color={isDestructive ? '#FF6B6B' : TEAL} />
+      <View style={[localStyles.iconContainer, isDestructive && { backgroundColor: '#FFF1F0' }]}>
+        <Icon size={18} color={isDestructive ? '#FF6B6B' : colors.teal} />
       </View>
-      <View style={styles.labelContainer}>
-        <Text style={[styles.settingLabel, isDestructive && { color: '#FF6B6B' }]}>{label}</Text>
+      <View style={localStyles.labelContainer}>
+        <Text style={[localStyles.settingLabel, isDestructive && { color: '#FF6B6B' }]}>{label}</Text>
       </View>
       {isToggle ? (
         <Switch
           value={toggleValue}
           onValueChange={onToggle}
-          trackColor={{ false: "#E2E8F0", true: TEAL_LIGHT }}
-          thumbColor={toggleValue ? TEAL : "#F8FAFC"}
+          trackColor={{ false: "#E2E8F0", true: colors.tealLight }}
+          thumbColor={toggleValue ? colors.teal : "#F8FAFC"}
           ios_backgroundColor="#E2E8F0"
         />
       ) : value ? (
-        <View style={styles.valueRow}>
-          <Text style={styles.settingValue}>{value}</Text>
-          <ChevronRight size={16} color="#CBD5E0" />
+        <View style={localStyles.valueRow}>
+          <Text style={localStyles.settingValue}>{value}</Text>
+          <ChevronRight size={16} color={colors.textSecondary} />
         </View>
       ) : (
-        <ChevronRight size={16} color="#CBD5E0" />
+        <ChevronRight size={16} color={colors.textSecondary} />
       )}
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => onNavigate('more')}>
-          <ChevronLeft size={24} color="#1A1A2E" />
+    <SafeAreaView style={localStyles.safeContainer}>
+      <View style={localStyles.header}>
+        <TouchableOpacity style={localStyles.backButton} onPress={() => onNavigate('more')}>
+          <ChevronLeft size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
-        <View style={{ width: 40 }} /> {/* Placeholder for balance */}
+        <Text style={localStyles.headerTitle}>Settings</Text>
+        <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollBody}>
+      <ScrollView showsVerticalScrollIndicator={false} style={localStyles.scrollBody}>
         
-        <View style={styles.section}>
+        <View style={localStyles.section}>
           <SectionHeader title="ACCOUNT" />
-          <View style={styles.card}>
+          <View style={localStyles.card}>
             <SettingItem icon={User} label="Edit Profile" />
-            <View style={styles.divider} />
+            <View style={localStyles.divider} />
             <SettingItem icon={Lock} label="Change Password" />
-            <View style={styles.divider} />
+            <View style={localStyles.divider} />
             <SettingItem icon={Bell} label="Push Notifications" isToggle toggleValue={notifications} onToggle={setNotifications} />
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={localStyles.section}>
           <SectionHeader title="PREFERENCES" />
-          <View style={styles.card}>
+          <View style={localStyles.card}>
             <SettingItem icon={Globe} label="Language" value="English" />
-            <View style={styles.divider} />
-            <SettingItem icon={Moon} label="Dark Mode" isToggle toggleValue={darkMode} onToggle={setDarkMode} />
-            <View style={styles.divider} />
+            <View style={localStyles.divider} />
+            <SettingItem icon={Moon} label="Dark Mode" isToggle toggleValue={theme === 'dark'} onToggle={toggleTheme} />
+            <View style={localStyles.divider} />
             <SettingItem icon={Ruler} label="Units" value="Metric" />
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={localStyles.section}>
           <SectionHeader title="SUPPORT & LEGAL" />
-          <View style={styles.card}>
+          <View style={localStyles.card}>
             <SettingItem icon={HelpCircle} label="Help Center" />
-            <View style={styles.divider} />
+            <View style={localStyles.divider} />
             <SettingItem icon={Shield} label="Privacy Policy" />
-            <View style={styles.divider} />
+            <View style={localStyles.divider} />
             <SettingItem icon={FileText} label="Terms of Service" />
           </View>
         </View>
 
-        <View style={[styles.section, { marginBottom: 40 }]}>
+        <View style={[localStyles.section, { marginBottom: 40 }]}>
           <SectionHeader title="DANGER ZONE" />
-          <View style={styles.card}>
+          <View style={localStyles.card}>
             <SettingItem icon={Trash2} label="Delete Account" isDestructive />
           </View>
         </View>
@@ -100,10 +101,10 @@ export default function SettingsScreen({ onNavigate }: { onNavigate: (s: Screen)
   );
 }
 
-const styles = StyleSheet.create({
+const getLocalStyles = (colors: any) => StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: BG_COLOR,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -111,9 +112,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F7FA',
+    borderBottomColor: colors.border,
   },
   backButton: {
     width: 40,
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontFamily: 'Poppins_700Bold',
-    color: '#1A1A2E',
+    color: colors.text,
   },
   scrollBody: {
     flex: 1,
@@ -136,13 +137,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontFamily: 'Poppins_600SemiBold',
-    color: '#8A94A6',
+    color: colors.textSecondary,
     letterSpacing: 1,
     marginBottom: 10,
     marginLeft: 5,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 20,
     paddingHorizontal: 15,
     shadowColor: '#000',
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 15,
@@ -171,12 +172,12 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 15,
     fontFamily: 'Poppins_500Medium',
-    color: '#1A1A2E',
+    color: colors.text,
   },
   settingValue: {
     fontSize: 14,
     fontFamily: 'Poppins_400Regular',
-    color: '#8A94A6',
+    color: colors.textSecondary,
     marginRight: 8,
   },
   valueRow: {
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: colors.border,
     marginLeft: 50,
   },
 });

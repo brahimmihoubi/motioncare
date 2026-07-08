@@ -3,10 +3,9 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -31,7 +30,7 @@ const ONBOARDING_SLIDES = [
     ),
     title: "Smart Patient\nManagement",
     subtitle: "Manage all your patients and their rehabilitation programs from a single, intuitive dashboard.",
-    accent: TEAL,
+    accent: "#0BC4BC",
     bg: "#E8FAF9",
   },
   {
@@ -83,6 +82,7 @@ const ONBOARDING_SLIDES = [
 ];
 
 export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () => void; onSkip: () => void }) {
+  const { styles, colors } = useTheme();
   const [slide, setSlide] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
@@ -92,6 +92,7 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
 
   const handleNext = () => {
     if (slide < ONBOARDING_SLIDES.length - 1) {
+  const { styles, colors } = useTheme();
       scrollViewRef.current?.scrollTo({
         x: (slide + 1) * SCREEN_WIDTH,
         animated: true,
@@ -104,6 +105,7 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
 
   const handleBack = () => {
     if (slide > 0) {
+  const { styles, colors } = useTheme();
       scrollViewRef.current?.scrollTo({
         x: (slide - 1) * SCREEN_WIDTH,
         animated: true,
@@ -144,6 +146,7 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
               const x = event.nativeEvent.contentOffset.x;
               const index = Math.round(x / SCREEN_WIDTH);
               if (index !== slide && index >= 0 && index < ONBOARDING_SLIDES.length) {
+  const { styles, colors } = useTheme();
                 setSlide(index);
               }
             },

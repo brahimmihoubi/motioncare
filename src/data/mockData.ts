@@ -1,6 +1,6 @@
 import React from 'react';
 import Svg, { Rect, Circle, Path, Text as SvgText } from 'react-native-svg';
-import { TEAL } from '../theme/colors';
+
 
 // Mock data
 export const patients = [

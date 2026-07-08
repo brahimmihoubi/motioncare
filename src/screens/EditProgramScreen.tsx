@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function EditProgramScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
   const exercises = [
     { name: "Leg Raises", sets: 3, reps: "10 reps", icon: "🦵" },
     { name: "Wall Squats", sets: 3, reps: "12 reps", icon: "🏋️" },
@@ -62,7 +62,7 @@ export default function EditProgramScreen({ onNavigate }: { onNavigate: (s: Scre
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Exercises</Text>
           <TouchableOpacity style={styles.addExerciseLink}>
-            <Plus size={12} color={TEAL} style={{ marginRight: 3 }} />
+            <Plus size={12} color={colors.teal} style={{ marginRight: 3 }} />
             <Text style={styles.addExerciseLinkText}>Add Exercise</Text>
           </TouchableOpacity>
         </View>
@@ -96,7 +96,7 @@ export default function EditProgramScreen({ onNavigate }: { onNavigate: (s: Scre
         </View>
 
         <TouchableOpacity
-          style={[styles.ctaBtn, { backgroundColor: TEAL, marginVertical: 20 }]}
+          style={[styles.ctaBtn, { backgroundColor: colors.teal, marginVertical: 20 }]}
           activeOpacity={0.8}
         >
           <Text style={styles.ctaBtnText}>Update Program</Text>

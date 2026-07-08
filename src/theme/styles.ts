@@ -1,25 +1,25 @@
 import { StyleSheet, Platform, StatusBar, Dimensions } from 'react-native';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from './colors';
+import { ThemeColors } from './colors';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export const styles = StyleSheet.create({
+export const getGlobalStyles = (colors: ThemeColors) => StyleSheet.create({
   // Root container
   appContainer: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
   },
   mainContentContainer: {
     flex: 1,
   },
   safeContainer: {
     flex: 1,
-    backgroundColor: BG_COLOR,
+    backgroundColor: colors.background,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   safeContainerWhite: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollBody: {
@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
   },
   logoShadow: {
-    shadowColor: TEAL,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 24,
@@ -69,9 +69,9 @@ export const styles = StyleSheet.create({
   // Navigation
   bottomNav: {
     height: 64,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderTopWidth: 1,
-    borderTopColor: "#F5F7FA",
+    borderTopColor: colors.border,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -92,7 +92,7 @@ export const styles = StyleSheet.create({
   // Splash Screen
   splashContainer: {
     flex: 1,
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -101,7 +101,7 @@ export const styles = StyleSheet.create({
   decorCircle: {
     position: "absolute",
     borderRadius: 999,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     opacity: 0.06,
   },
   splashContent: {
@@ -153,7 +153,7 @@ export const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
   },
 
   // Onboarding Screen
@@ -168,18 +168,18 @@ export const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
   },
   skipBtn: {
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 15,
   },
   skipBtnText: {
-    color: "#8A94A6",
+    color: colors.textSecondary,
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
   },
@@ -208,14 +208,14 @@ export const styles = StyleSheet.create({
   slideTitle: {
     fontSize: 24,
     fontFamily: "Poppins_800ExtraBold",
-    color: "#1A1A2E",
+    color: colors.text,
     textAlign: "center",
     lineHeight: 30,
     marginBottom: 10,
   },
   slideSubtitle: {
     fontSize: 14,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     textAlign: "center",
     lineHeight: 20,
     paddingHorizontal: 15,
@@ -238,7 +238,7 @@ export const styles = StyleSheet.create({
   slideCounter: {
     fontSize: 12,
     fontFamily: "Poppins_500Medium",
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
 
   // Welcome Screen
@@ -270,20 +270,20 @@ export const styles = StyleSheet.create({
   },
   headerProfileGreet: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     fontFamily: "Poppins_500Medium",
   },
   headerProfileName: {
     fontSize: 15,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginTop: 1,
   },
   headerActionBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -304,8 +304,8 @@ export const styles = StyleSheet.create({
   dashboardStatsCard: {
     marginHorizontal: 20,
     borderRadius: 20,
-    backgroundColor: TEAL,
-    shadowColor: TEAL,
+    backgroundColor: colors.teal,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 15,
@@ -340,7 +340,7 @@ export const styles = StyleSheet.create({
   dividerVal: {
     width: 1,
     height: 48,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     opacity: 0.2,
     marginHorizontal: 12,
   },
@@ -363,19 +363,19 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   sectionLink: {
     fontSize: 13,
     fontFamily: "Poppins_600SemiBold",
-    color: TEAL,
+    color: colors.teal,
   },
   dashboardList: {
     paddingHorizontal: 20,
     gap: 12,
   },
   patientListItem: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 18,
     padding: 12,
     flexDirection: "row",
@@ -393,11 +393,11 @@ export const styles = StyleSheet.create({
   patientListName: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   patientListCondition: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   patientListEnd: {
@@ -415,7 +415,7 @@ export const styles = StyleSheet.create({
   },
   patientListTime: {
     fontSize: 10,
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
 
   // Patients Screen
@@ -423,7 +423,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 15,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
   },
   patientsHeaderRow: {
     flexDirection: "row",
@@ -434,20 +434,20 @@ export const styles = StyleSheet.create({
   titleText: {
     fontSize: 22,
     fontFamily: "Poppins_800ExtraBold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   addBtnContainer: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: "center",
     justifyContent: "center",
   },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     borderRadius: 14,
     paddingHorizontal: 12,
     height: 42,
@@ -456,7 +456,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     fontSize: 14,
-    color: "#1A1A2E",
+    color: colors.text,
     paddingVertical: 0,
   },
   tabsRow: {
@@ -469,7 +469,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.02,
@@ -486,7 +486,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   patientGridCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 20,
     padding: 15,
     flexDirection: "row",
@@ -505,11 +505,11 @@ export const styles = StyleSheet.create({
   patientListNameLarge: {
     fontSize: 15,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   patientListConditionLarge: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   patientGridProgressRow: {
@@ -521,7 +521,7 @@ export const styles = StyleSheet.create({
   progressBarBg: {
     flex: 1,
     height: 6,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     borderRadius: 3,
     overflow: "hidden",
   },
@@ -532,7 +532,7 @@ export const styles = StyleSheet.create({
   progressPctText: {
     fontSize: 11,
     fontFamily: "Poppins_500Medium",
-    color: "#8A94A6",
+    color: colors.textSecondary,
     width: 28,
     textAlign: "right",
   },
@@ -543,19 +543,19 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F7FA",
+    borderBottomColor: colors.border,
   },
   detailHeaderTitle: {
     flex: 1,
     textAlign: "center",
     fontSize: 16,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   detailProfileCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 18,
@@ -574,16 +574,16 @@ export const styles = StyleSheet.create({
   profileCardName: {
     fontSize: 16,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   profileCardDoctor: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   profileCardBadge: {
     alignSelf: "flex-start",
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -592,13 +592,13 @@ export const styles = StyleSheet.create({
   profileCardBadgeText: {
     fontSize: 10,
     fontFamily: "Poppins_600SemiBold",
-    color: TEAL,
+    color: colors.teal,
   },
   profileStatsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 1,
-    borderTopColor: "#F5F7FA",
+    borderTopColor: colors.border,
     marginTop: 15,
     paddingTop: 12,
   },
@@ -609,15 +609,15 @@ export const styles = StyleSheet.create({
   profileStatVal: {
     fontSize: 18,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   profileStatLabel: {
     fontSize: 10,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   progressRingCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -645,25 +645,25 @@ export const styles = StyleSheet.create({
   ringTextVal: {
     fontSize: 13,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   ringCardTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   ringCardSubtitle: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 1,
   },
   ringCardCount: {
     fontSize: 11,
-    color: "#5C6470",
+    color: colors.textMuted,
     marginTop: 4,
   },
   recommendationsCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -683,7 +683,7 @@ export const styles = StyleSheet.create({
   recommendationsTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   recommendationItem: {
     flexDirection: "row",
@@ -694,16 +694,16 @@ export const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     marginRight: 8,
   },
   recommendationText: {
     fontSize: 12,
-    color: "#5C6470",
+    color: colors.textMuted,
     flex: 1,
   },
   deviationsSummaryCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -717,12 +717,12 @@ export const styles = StyleSheet.create({
   viewDeviationsText: {
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
-    color: TEAL,
+    color: colors.teal,
   },
   deviationMiniItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF1F0",
+    backgroundColor: colors.errorBg,
     padding: 10,
     borderRadius: 12,
     marginBottom: 8,
@@ -737,17 +737,17 @@ export const styles = StyleSheet.create({
   deviationMiniTitle: {
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
-    color: "#E53E3E",
+    color: colors.error,
   },
   deviationMiniDate: {
     fontSize: 9,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 1,
   },
 
   // Program Screen
   programItemCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 20,
     padding: 15,
     flexDirection: "row",
@@ -768,11 +768,11 @@ export const styles = StyleSheet.create({
   programNameText: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   programPatientText: {
     fontSize: 12,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   programDetailsRow: {
@@ -787,12 +787,12 @@ export const styles = StyleSheet.create({
   },
   programMetaText: {
     fontSize: 11,
-    color: "#5C6470",
+    color: colors.textMuted,
   },
 
   // Edit Program
   editProgramBanner: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -817,24 +817,24 @@ export const styles = StyleSheet.create({
   bannerGridCell: {
     flex: 1,
     minWidth: 140,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   bannerGridCellLabel: {
     fontSize: 9,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     textTransform: "uppercase",
   },
   bannerGridCellVal: {
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginTop: 2,
   },
   saveHeaderBtn: {
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 15,
@@ -851,10 +851,10 @@ export const styles = StyleSheet.create({
   addExerciseLinkText: {
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
-    color: TEAL,
+    color: colors.teal,
   },
   exerciseListItem: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 20,
     padding: 12,
     flexDirection: "row",
@@ -869,25 +869,25 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: "center",
     justifyContent: "center",
   },
   exerciseName: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   exerciseRepsMeta: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   circleMinusBtn: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#FFF1F0",
+    backgroundColor: colors.errorBg,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -902,7 +902,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    shadowColor: TEAL,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -912,11 +912,11 @@ export const styles = StyleSheet.create({
   exerciseVisualTitle: {
     fontSize: 16,
     fontFamily: "Poppins_700Bold",
-    color: TEAL,
+    color: colors.teal,
   },
   exerciseVisualSub: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 1,
   },
   playBtnContainer: {
@@ -924,18 +924,18 @@ export const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     alignItems: "center",
     justifyContent: "center",
     bottom: -15,
-    shadowColor: TEAL,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   descCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -950,16 +950,16 @@ export const styles = StyleSheet.create({
   descCardTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginBottom: 8,
   },
   descCardText: {
     fontSize: 12,
-    color: "#5C6470",
+    color: colors.textMuted,
     lineHeight: 18,
   },
   counterCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 12,
@@ -973,12 +973,12 @@ export const styles = StyleSheet.create({
   },
   counterCardLabel: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
   counterCardVal: {
     fontSize: 15,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginTop: 2,
   },
   counterCardUnit: {
@@ -995,21 +995,21 @@ export const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: "center",
     justifyContent: "center",
   },
   counterControlVal: {
     fontSize: 16,
     fontFamily: "Poppins_700Bold",
-    color: TEAL,
+    color: colors.teal,
     width: 24,
     textAlign: "center",
   },
 
   // Deviations Screen
   deviationsPatientHeader: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 12,
@@ -1025,7 +1025,7 @@ export const styles = StyleSheet.create({
   deviationsHeaderCountText: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#FF6B6B",
+    color: colors.error,
     marginTop: 1,
   },
   hFilterRow: {
@@ -1050,7 +1050,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginRight: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -1061,7 +1061,7 @@ export const styles = StyleSheet.create({
   filterPillText: {
     fontSize: 11,
     fontFamily: "Poppins_600SemiBold",
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
   severityGrid: {
     flexDirection: "row",
@@ -1086,7 +1086,7 @@ export const styles = StyleSheet.create({
     marginTop: 1,
   },
   deviationDetailCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 20,
     padding: 15,
     shadowColor: "#000",
@@ -1103,7 +1103,7 @@ export const styles = StyleSheet.create({
   deviationDotConnector: {
     width: 1,
     height: 44,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     marginTop: 4,
   },
   deviationCardHeaderRow: {
@@ -1115,7 +1115,7 @@ export const styles = StyleSheet.create({
   deviationCardTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   severityBadgeInline: {
     paddingHorizontal: 6,
@@ -1129,7 +1129,7 @@ export const styles = StyleSheet.create({
   },
   deviationCardDesc: {
     fontSize: 12,
-    color: "#5C6470",
+    color: colors.textMuted,
     lineHeight: 16,
   },
   deviationCardFooterRow: {
@@ -1139,12 +1139,12 @@ export const styles = StyleSheet.create({
   },
   deviationCardDateText: {
     fontSize: 10,
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
 
   // Progress Screen
   progressPatientSelector: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 12,
@@ -1168,7 +1168,7 @@ export const styles = StyleSheet.create({
   progressStatTile: {
     flex: 1,
     minWidth: 140,
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 18,
     padding: 12,
     shadowColor: "#000",
@@ -1196,11 +1196,11 @@ export const styles = StyleSheet.create({
   },
   statTileLabel: {
     fontSize: 10,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   chartCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -1220,11 +1220,11 @@ export const styles = StyleSheet.create({
   chartCardTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   chartCardSubtitle: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
   },
   xAxisRow: {
     flexDirection: "row",
@@ -1234,13 +1234,13 @@ export const styles = StyleSheet.create({
   },
   xAxisText: {
     fontSize: 9,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     fontFamily: "Poppins_500Medium",
     width: 24,
     textAlign: "center",
   },
   weeklyGoalCard: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     padding: 15,
@@ -1260,11 +1260,11 @@ export const styles = StyleSheet.create({
   weeklyGoalFraction: {
     fontSize: 12,
     fontFamily: "Poppins_700Bold",
-    color: TEAL,
+    color: colors.teal,
   },
   goalProgressBarBg: {
     height: 10,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
     borderRadius: 5,
     overflow: "hidden",
     marginVertical: 4,
@@ -1275,17 +1275,17 @@ export const styles = StyleSheet.create({
   },
   weeklyGoalSubtitle: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 4,
   },
 
   // More Screen
   moreProfileBanner: {
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     marginHorizontal: 20,
     borderRadius: 22,
     padding: 18,
-    shadowColor: TEAL,
+    shadowColor: colors.teal,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 15,
@@ -1341,7 +1341,7 @@ export const styles = StyleSheet.create({
     marginTop: 2,
   },
   menuItemsContainer: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     shadowColor: "#000",
@@ -1360,28 +1360,28 @@ export const styles = StyleSheet.create({
   },
   menuItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F7FA",
+    borderBottomColor: colors.border,
   },
   menuIconContainer: {
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: "center",
     justifyContent: "center",
   },
   menuItemLabel: {
     fontSize: 13,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   menuItemDesc: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: colors.textSecondary,
     marginTop: 2,
   },
   logoutRow: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     marginHorizontal: 20,
     borderRadius: 20,
     paddingHorizontal: 15,
@@ -1399,14 +1399,14 @@ export const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: "#FFF1F0",
+    backgroundColor: colors.errorBg,
     alignItems: "center",
     justifyContent: "center",
   },
   logoutLabel: {
     fontSize: 13,
     fontFamily: "Poppins_600SemiBold",
-    color: "#FF6B6B",
+    color: colors.error,
     marginLeft: 12,
   },
   moreVersionText: {

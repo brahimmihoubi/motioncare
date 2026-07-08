@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState("All");
 
@@ -28,7 +28,7 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen)
         <View style={styles.patientsHeaderRow}>
           <Text style={styles.titleText}>Patients</Text>
           <TouchableOpacity style={styles.addBtnContainer}>
-            <Plus size={18} color={TEAL} />
+            <Plus size={18} color={colors.teal} />
           </TouchableOpacity>
         </View>
 
@@ -53,7 +53,7 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen)
               <TouchableOpacity
                 key={t}
                 onPress={() => setTab(t)}
-                style={[styles.tabBtn, active && { backgroundColor: TEAL }]}
+                style={[styles.tabBtn, active && { backgroundColor: colors.teal }]}
               >
                 <Text style={[styles.tabBtnText, { color: active ? "white" : "#8A94A6" }]}>
                   {t}
@@ -79,7 +79,7 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen)
                 <View style={styles.patientGridProgressRow}>
                   <View style={styles.progressBarBg}>
                     <View
-                      style={[styles.progressBarFill, { width: `${p.completed}%` as any, backgroundColor: TEAL }]}
+                      style={[styles.progressBarFill, { width: `${p.completed}%` as any, backgroundColor: colors.teal }]}
                     />
                   </View>
                   <Text style={styles.progressPctText}>{p.completed}%</Text>

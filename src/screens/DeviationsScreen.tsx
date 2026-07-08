@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function DeviationsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
   const severityColors: Record<string, { bg: string; text: string; dot: string }> = {
     high: { bg: "#FFF1F0", text: "#E53E3E", dot: "#E53E3E" },
     medium: { bg: "#FFFBF0", text: "#D97706", dot: "#F59E0B" },
@@ -25,7 +25,7 @@ export default function DeviationsScreen({ onNavigate }: { onNavigate: (s: Scree
         </TouchableOpacity>
         <Text style={styles.detailHeaderTitle}>Deviations</Text>
         <TouchableOpacity style={styles.circleBtnSmall}>
-          <Filter size={15} color={TEAL} />
+          <Filter size={15} color={colors.teal} />
         </TouchableOpacity>
       </View>
 
@@ -45,7 +45,7 @@ export default function DeviationsScreen({ onNavigate }: { onNavigate: (s: Scree
 
         {/* Calendar filters */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hFilterRow}>
-          <TouchableOpacity style={[styles.filterPillActive, { backgroundColor: TEAL }]}>
+          <TouchableOpacity style={[styles.filterPillActive, { backgroundColor: colors.teal }]}>
             <Calendar size={12} color="white" style={{ marginRight: 4 }} />
             <Text style={styles.filterPillActiveText}>This Week</Text>
           </TouchableOpacity>

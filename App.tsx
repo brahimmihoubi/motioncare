@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { View, StatusBar, Text, TextInput } from 'react-native';
 import { Screen } from './src/types';
 import { BottomNav } from './src/components';
-import { styles } from './src/theme/styles';
-import { TEAL } from './src/theme/colors';
+import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 
 import {
   useFonts,
@@ -37,22 +36,9 @@ import NotificationsScreen from './src/screens/NotificationsScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 
 
-export default function App() {
+function AppContent() {
   const [screen, setScreen] = useState<Screen>("splash");
-
-  const [fontsLoaded] = useFonts({
-    Poppins_100Thin,
-    Poppins_200ExtraLight,
-    Poppins_300Light,
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    Poppins_800ExtraBold,
-    Poppins_900Black,
-  });
-
-  if (!fontsLoaded) return null;
+  const { theme, colors, styles } = useTheme();
 
   const renderScreen = () => {
     switch (screen) {
@@ -75,18 +61,40 @@ export default function App() {
     }
   };
 
-  const showNav = screen !== "splash" && screen !== "onboarding" && screen !== "welcome";
+  const showNav = screen !== "splash" && screen !== "onboarding" && screen !== "welcome" && screen !== "signup";
 
   return (
     <View style={styles.appContainer}>
       <StatusBar
-        backgroundColor={screen === "splash" || screen === "welcome" ? TEAL : "white"}
-        barStyle={screen === "splash" || screen === "welcome" ? "light-content" : "dark-content"}
+        backgroundColor={screen === "splash" || screen === "welcome" ? colors.teal : colors.card}
+        barStyle={screen === "splash" || screen === "welcome" ? "light-content" : (theme === 'dark' ? "light-content" : "dark-content")}
       />
       <View style={styles.mainContentContainer}>
         {renderScreen()}
       </View>
-      {showNav && <BottomNav current={screen} onNavigate={setScreen} />}
+      {showNav ? <BottomNav current={screen} onNavigate={setScreen} /> : null}
     </View>
+  );
+}
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    Poppins_100Thin,
+    Poppins_200ExtraLight,
+    Poppins_300Light,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    Poppins_800ExtraBold,
+    Poppins_900Black,
+  });
+
+  if (!fontsLoaded) return null;
+
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
-import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
+import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function ProgressScreen() {
+  const { styles, colors } = useTheme();
   const chartWidth = SCREEN_WIDTH - 70; // responsive sizing matching screen layout padding
   const chartHeight = 110;
 
@@ -36,7 +36,7 @@ export default function ProgressScreen() {
       <View style={styles.detailHeader}>
         <Text style={[styles.titleText, { flex: 1, paddingLeft: 10 }]}>Progress</Text>
         <TouchableOpacity style={styles.circleBtnSmall}>
-          <Filter size={15} color={TEAL} />
+          <Filter size={15} color={colors.teal} />
         </TouchableOpacity>
       </View>
 
@@ -54,7 +54,7 @@ export default function ProgressScreen() {
         {/* Small stats tiles */}
         <View style={styles.progressStatsGrid}>
           {[
-            { label: "Completion Rate", value: "67%", change: "+8%", color: TEAL },
+            { label: "Completion Rate", value: "67%", change: "+8%", color: colors.teal },
             { label: "Avg Score", value: "82", change: "+5", color: "#7C83FD" },
             { label: "Streak", value: "7 days", change: "Best!", color: "#FF8C69" },
             { label: "Exercises Done", value: "48", change: "+12", color: "#4CAF50" },
@@ -80,8 +80,8 @@ export default function ProgressScreen() {
             <Svg width={chartWidth} height={chartHeight}>
               <Defs>
                 <LinearGradient id="tealGrad" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="5%" stopColor={TEAL} stopOpacity={0.3} />
-                  <Stop offset="95%" stopColor={TEAL} stopOpacity={0} />
+                  <Stop offset="5%" stopColor={colors.teal} stopOpacity={0.3} />
+                  <Stop offset="95%" stopColor={colors.teal} stopOpacity={0} />
                 </LinearGradient>
               </Defs>
               {/* Background grid lines */}
@@ -98,11 +98,11 @@ export default function ProgressScreen() {
               <Path d={areaShapeD} fill="url(#tealGrad)" />
 
               {/* Path line */}
-              <Path d={areaLineD} fill="none" stroke={TEAL} strokeWidth="2.5" />
+              <Path d={areaLineD} fill="none" stroke={colors.teal} strokeWidth="2.5" />
 
               {/* Interactive Dots */}
               {areaPoints.map((p, i) => (
-                <Circle key={i} cx={p.x} cy={p.y} r={3.5} fill={TEAL} />
+                <Circle key={i} cx={p.x} cy={p.y} r={3.5} fill={colors.teal} />
               ))}
             </Svg>
           </View>
@@ -151,7 +151,7 @@ export default function ProgressScreen() {
                     height={barHeight}
                     rx={4}
                     ry={4}
-                    fill={TEAL}
+                    fill={colors.teal}
                   />
                 );
               })}
@@ -175,7 +175,7 @@ export default function ProgressScreen() {
             <Text style={styles.weeklyGoalFraction}>5 / 7 sessions</Text>
           </View>
           <View style={styles.goalProgressBarBg}>
-            <View style={[styles.goalProgressBarFill, { width: "71%" as any, backgroundColor: TEAL }]} />
+            <View style={[styles.goalProgressBarFill, { width: "71%" as any, backgroundColor: colors.teal }]} />
           </View>
           <Text style={styles.weeklyGoalSubtitle}>71% of weekly goal completed</Text>
         </View>

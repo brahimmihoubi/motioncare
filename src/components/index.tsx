@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Screen } from '../types';
-import { TEAL } from '../theme/colors';
-import { styles } from '../theme/styles';
+import { useTheme } from '../theme/ThemeContext';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon } from 'lucide-react-native';
 
 const motionCareLogo = require('../../assets/MotionCare_logo.png');
@@ -16,6 +15,8 @@ export function Avatar({
   color: string;
   size?: "sm" | "md" | "lg" | "xl";
 }) {
+  const { styles } = useTheme();
+  
   const sizeMap = {
     sm: 32,
     md: 40,
@@ -49,6 +50,8 @@ export function Avatar({
 }
 
 export function MotionCareLogo({ size = 60, withBg = true }: { size?: number; withBg?: boolean }) {
+  const { styles, colors } = useTheme();
+
   return (
     <View
       style={[
@@ -57,7 +60,7 @@ export function MotionCareLogo({ size = 60, withBg = true }: { size?: number; wi
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: withBg ? "white" : "transparent",
+          backgroundColor: withBg ? colors.card : "transparent",
         },
         withBg && styles.logoShadow,
       ]}
@@ -78,6 +81,8 @@ export function BottomNav({
   current: string;
   onNavigate: (s: Screen) => void;
 }) {
+  const { styles, colors } = useTheme();
+  
   const tabs = [
     { id: "dashboard", icon: HomeIcon, label: "Home" },
     { id: "patients", icon: UsersIcon, label: "Patients" },
@@ -95,7 +100,7 @@ export function BottomNav({
           (current === "exercise-detail" && t.id === "programs") ||
           (current === "deviations" && t.id === "patients");
         const IconComponent = t.icon;
-        const color = active ? TEAL : "#8A94A6";
+        const color = active ? colors.teal : colors.textSecondary;
 
         return (
           <TouchableOpacity
@@ -112,4 +117,3 @@ export function BottomNav({
     </View>
   );
 }
-

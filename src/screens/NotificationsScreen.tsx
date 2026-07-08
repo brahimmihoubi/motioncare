@@ -4,9 +4,8 @@ import {
   TouchableOpacity, SafeAreaView,
 } from 'react-native';
 import { ChevronLeft, Bell, CheckCircle, AlertCircle, Clock, Trash2, Check } from 'lucide-react-native';
-import { styles as globalStyles } from '../theme/styles';
 import { Screen } from '../types';
-import { TEAL, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
+import { useTheme } from '../theme/ThemeContext';
 
 type Notification = {
   id: string;
@@ -84,6 +83,8 @@ const TYPE_CONFIG = {
 };
 
 export default function NotificationsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+  const { styles, colors } = useTheme();
+  const localStyles = getLocalStyles(colors);
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -104,25 +105,25 @@ export default function NotificationsScreen({ onNavigate }: { onNavigate: (s: Sc
   const read = notifications.filter(n => n.read);
 
   return (
-    <SafeAreaView style={globalStyles.safeContainer}>
+    <SafeAreaView style={styles.safeContainer}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => onNavigate('dashboard')}>
+      <View style={localStyles.header}>
+        <TouchableOpacity style={localStyles.backButton} onPress={() => onNavigate('dashboard')}>
           <ChevronLeft size={24} color="#1A1A2E" />
         </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Notifications</Text>
+        <View style={localStyles.headerCenter}>
+          <Text style={localStyles.headerTitle}>Notifications</Text>
           {unreadCount > 0 && (
-            <View style={styles.headerBadge}>
-              <Text style={styles.headerBadgeText}>{unreadCount}</Text>
+            <View style={localStyles.headerBadge}>
+              <Text style={localStyles.headerBadgeText}>{unreadCount}</Text>
             </View>
           )}
         </View>
-        <View style={styles.headerRight}>
+        <View style={localStyles.headerRight}>
           {unreadCount > 0 ? (
-            <TouchableOpacity style={styles.markAllBtn} onPress={markAllRead}>
-              <Check size={13} color={TEAL} />
-              <Text style={styles.markAllText}>All read</Text>
+            <TouchableOpacity style={localStyles.markAllBtn} onPress={markAllRead}>
+              <Check size={13} color={colors.teal} />
+              <Text style={localStyles.markAllText}>All read</Text>
             </TouchableOpacity>
           ) : (
             <View style={{ width: 72 }} />
@@ -130,11 +131,11 @@ export default function NotificationsScreen({ onNavigate }: { onNavigate: (s: Sc
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollBody}>
+      <ScrollView showsVerticalScrollIndicator={false} style={localStyles.scrollBody}>
         {/* Unread section */}
         {unread.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>NEW</Text>
+          <View style={localStyles.section}>
+            <Text style={localStyles.sectionLabel}>NEW</Text>
             {unread.map(n => (
               <NotifCard key={n.id} notification={n} onRead={markRead} onDismiss={dismiss} />
             ))}
@@ -143,8 +144,8 @@ export default function NotificationsScreen({ onNavigate }: { onNavigate: (s: Sc
 
         {/* Read section */}
         {read.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>EARLIER</Text>
+          <View style={localStyles.section}>
+            <Text style={localStyles.sectionLabel}>EARLIER</Text>
             {read.map(n => (
               <NotifCard key={n.id} notification={n} onRead={markRead} onDismiss={dismiss} />
             ))}
@@ -152,12 +153,12 @@ export default function NotificationsScreen({ onNavigate }: { onNavigate: (s: Sc
         )}
 
         {notifications.length === 0 && (
-          <View style={styles.emptyState}>
-            <View style={styles.emptyIcon}>
-              <Bell size={36} color={TEAL} />
+          <View style={localStyles.emptyState}>
+            <View style={localStyles.emptyIcon}>
+              <Bell size={36} color={colors.teal} />
             </View>
-            <Text style={styles.emptyTitle}>All caught up!</Text>
-            <Text style={styles.emptySubtitle}>No notifications at the moment.</Text>
+            <Text style={localStyles.emptyTitle}>All caught up!</Text>
+            <Text style={localStyles.emptySubtitle}>No notifications at the moment.</Text>
           </View>
         )}
 
@@ -176,44 +177,46 @@ function NotifCard({
   onRead: (id: string) => void;
   onDismiss: (id: string) => void;
 }) {
+  const { styles, colors } = useTheme();
+  const localStyles = getLocalStyles(colors);
   const { icon: Icon, color, bg } = TYPE_CONFIG[n.type];
 
   return (
     <TouchableOpacity
-      style={[styles.card, n.read && styles.cardRead]}
+      style={[localStyles.card, n.read && localStyles.cardRead]}
       activeOpacity={0.7}
       onPress={() => onRead(n.id)}
     >
-      {!n.read && <View style={styles.unreadDot} />}
-      <View style={[styles.iconWrap, { backgroundColor: bg }]}>
+      {!n.read && <View style={localStyles.unreadDot} />}
+      <View style={[localStyles.iconWrap, { backgroundColor: bg }]}>
         <Icon size={20} color={color} />
       </View>
-      <View style={styles.cardBody}>
-        <View style={styles.cardTop}>
-          <Text style={[styles.cardTitle, n.read && styles.cardTitleRead]} numberOfLines={1}>
+      <View style={localStyles.cardBody}>
+        <View style={localStyles.cardTop}>
+          <Text style={[localStyles.cardTitle, n.read && localStyles.cardTitleRead]} numberOfLines={1}>
             {n.title}
           </Text>
-          <Text style={styles.cardTime}>{n.time}</Text>
+          <Text style={localStyles.cardTime}>{n.time}</Text>
         </View>
-        <Text style={styles.cardMessage} numberOfLines={2}>{n.message}</Text>
+        <Text style={localStyles.cardMessage} numberOfLines={2}>{n.message}</Text>
       </View>
-      <TouchableOpacity style={styles.dismissBtn} onPress={() => onDismiss(n.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+      <TouchableOpacity style={localStyles.dismissBtn} onPress={() => onDismiss(n.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
         <Trash2 size={14} color="#CBD5E0" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
+const getLocalStyles = (colors: any) => StyleSheet.create({
   // safeContainer is from globalStyles (handles Android status bar)
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F7FA',
+    borderBottomColor: colors.border,
   },
   backButton: {
     width: 36,
@@ -234,10 +237,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 17,
     fontFamily: 'Poppins_700Bold',
-    color: '#1A1A2E',
+    color: colors.text,
   },
   headerBadge: {
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -247,7 +250,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   headerBadgeText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 11,
     fontFamily: 'Poppins_600SemiBold',
   },
@@ -256,13 +259,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 6,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     borderRadius: 20,
   },
   markAllText: {
     fontSize: 12,
     fontFamily: 'Poppins_500Medium',
-    color: TEAL,
+    color: colors.teal,
     marginLeft: 4,
   },
   scrollBody: {
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 11,
     fontFamily: 'Poppins_600SemiBold',
-    color: '#8A94A6',
+    color: colors.textSecondary,
     letterSpacing: 1.2,
     marginBottom: 10,
     marginLeft: 4,
@@ -283,7 +286,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 14,
     marginBottom: 10,
@@ -304,7 +307,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: TEAL,
+    backgroundColor: colors.teal,
   },
   iconWrap: {
     width: 44,
@@ -327,24 +330,24 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontFamily: 'Poppins_600SemiBold',
-    color: '#1A1A2E',
+    color: colors.text,
     flex: 1,
     marginRight: 8,
   },
   cardTitleRead: {
     fontFamily: 'Poppins_500Medium',
-    color: '#4A5568',
+    color: colors.textMuted,
   },
   cardTime: {
     fontSize: 11,
     fontFamily: 'Poppins_400Regular',
-    color: '#A0AEC0',
+    color: colors.textSecondary,
     flexShrink: 0,
   },
   cardMessage: {
     fontSize: 13,
     fontFamily: 'Poppins_400Regular',
-    color: '#718096',
+    color: colors.textMuted,
     lineHeight: 19,
   },
   dismissBtn: {
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: TEAL_LIGHT,
+    backgroundColor: colors.tealLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -369,12 +372,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontFamily: 'Poppins_700Bold',
-    color: '#1A1A2E',
+    color: colors.text,
     marginBottom: 6,
   },
   emptySubtitle: {
     fontSize: 14,
     fontFamily: 'Poppins_400Regular',
-    color: '#8A94A6',
+    color: colors.textSecondary,
   },
 });
