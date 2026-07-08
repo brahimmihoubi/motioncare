@@ -1,0 +1,13 @@
+export type Screen =
+  | "splash"
+  | "onboarding"
+  | "welcome"
+  | "dashboard"
+  | "patients"
+  | "patient-detail"
+  | "programs"
+  | "edit-program"
+  | "exercise-detail"
+  | "deviations"
+  | "progress"
+  | "more";
