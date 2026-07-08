@@ -6,17 +6,17 @@ import { Screen } from '../types';
 import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, RehabKidsLogo } from '../components';
+import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function MoreScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const menuItems = [
     { icon: HomeIcon, label: "Dashboard", desc: "View your dashboard", screen: "dashboard" },
-    { icon: Bell, label: "Notifications", desc: "Manage alerts", screen: "deviations" },
+    { icon: Bell, label: "Notifications", desc: "Manage alerts", screen: "notifications" },
     { icon: BarChart2, label: "Analytics", desc: "View reports", screen: "progress" },
     { icon: HelpCircle, label: "Help & Support", desc: "Get assistance", screen: "welcome" },
-    { icon: Settings, label: "Settings", desc: "App preferences", screen: "welcome" },
+    { icon: Settings, label: "Settings", desc: "App preferences", screen: "settings" },
   ];
 
   return (
@@ -29,7 +29,7 @@ export default function MoreScreen({ onNavigate }: { onNavigate: (s: Screen) => 
         {/* Profile Stats Banner */}
         <View style={styles.moreProfileBanner}>
           <View style={styles.profileBannerHeader}>
-            <RehabKidsLogo size={64} withBg={true} />
+            <MotionCareLogo size={64} withBg={true} />
             <View style={{ marginLeft: 15, flex: 1 }}>
               <Text style={styles.profileBannerName}>Dr. Sara Ahmed</Text>
               <Text style={styles.profileBannerRole}>Physical Therapist</Text>
@@ -92,7 +92,7 @@ export default function MoreScreen({ onNavigate }: { onNavigate: (s: Screen) => 
           <ChevronRight size={15} color="#CBD5E0" style={{ marginLeft: 8 }} />
         </TouchableOpacity>
 
-        <Text style={styles.moreVersionText}>RehabKids v2.4.1</Text>
+        <Text style={styles.moreVersionText}>MotionCare v2.4.1</Text>
       </ScrollView>
     </SafeAreaView>
   );

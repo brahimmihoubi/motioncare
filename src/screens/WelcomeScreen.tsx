@@ -6,7 +6,7 @@ import { Screen } from '../types';
 import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, RehabKidsLogo } from '../components';
+import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -18,8 +18,8 @@ export default function WelcomeScreen({ onStart }: { onStart: () => void }) {
       <View style={[styles.decorCircle, { width: 240, height: 240, bottom: -60, left: -60 }]} />
 
       <View style={[styles.splashContent, { marginTop: 40 }]}>
-        <RehabKidsLogo size={110} />
-        <Text style={[styles.splashTitle, { fontSize: 32, marginTop: 20 }]}>RehabKids</Text>
+        <MotionCareLogo size={110} />
+        <Text style={[styles.splashTitle, { fontSize: 32, marginTop: 20 }]}>MotionCare</Text>
         <Text style={[styles.splashSubtitle, { fontSize: 11, letterSpacing: 1.2, textAlign: 'center' }]}>
           PEDIATRIC REHABILITATION EXERCISE{'\n'}ASSISTANT
         </Text>

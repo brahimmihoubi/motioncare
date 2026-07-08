@@ -6,7 +6,7 @@ import { Screen } from '../types';
 import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, RehabKidsLogo } from '../components';
+import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -15,16 +15,16 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.appHeader}>
         <View style={styles.headerProfile}>
-          <RehabKidsLogo size={38} withBg={false} />
+          <MotionCareLogo size={38} withBg={false} />
           <View style={{ marginLeft: 8 }}>
             <Text style={styles.headerProfileGreet}>Good Morning 👋</Text>
             <Text style={styles.headerProfileName}>Dr. Sara Ahmed</Text>
           </View>
         </View>
-        <View style={styles.headerActionBtn}>
+        <TouchableOpacity style={styles.headerActionBtn} onPress={() => onNavigate('notifications')} activeOpacity={0.7}>
           <Bell size={18} color={TEAL} />
           <View style={styles.badgeDot} />
-        </View>
+        </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollBody}>

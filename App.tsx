@@ -18,13 +18,6 @@ import {
   Poppins_900Black,
 } from '@expo-google-fonts/poppins';
 
-const CustomText = Text as any;
-CustomText.defaultProps = CustomText.defaultProps || {};
-CustomText.defaultProps.style = { fontFamily: 'Poppins_400Regular' };
-
-const CustomTextInput = TextInput as any;
-CustomTextInput.defaultProps = CustomTextInput.defaultProps || {};
-CustomTextInput.defaultProps.style = { fontFamily: 'Poppins_400Regular' };
 
 // Import Screens
 import SplashScreen from './src/screens/SplashScreen';
@@ -39,6 +32,10 @@ import ExerciseDetailScreen from './src/screens/ExerciseDetailScreen';
 import DeviationsScreen from './src/screens/DeviationsScreen';
 import ProgressScreen from './src/screens/ProgressScreen';
 import MoreScreen from './src/screens/MoreScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import NotificationsScreen from './src/screens/NotificationsScreen';
+
+
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("splash");
@@ -71,6 +68,8 @@ export default function App() {
       case "deviations": return <DeviationsScreen onNavigate={setScreen} />;
       case "progress": return <ProgressScreen />;
       case "more": return <MoreScreen onNavigate={setScreen} />;
+      case "settings": return <SettingsScreen onNavigate={setScreen} />;
+      case "notifications": return <NotificationsScreen onNavigate={setScreen} />;
       default: return <DashboardScreen onNavigate={setScreen} />;
     }
   };

@@ -10,4 +10,6 @@ export type Screen =
   | "exercise-detail"
   | "deviations"
   | "progress"
-  | "more";
+  | "more"
+  | "settings"
+  | "notifications";

@@ -5,7 +5,7 @@ import { TEAL } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon } from 'lucide-react-native';
 
-const rehabKidsLogo = require('../../assets/MotionCare_logo.png');
+const motionCareLogo = require('../../assets/MotionCare_logo.png');
 
 export function Avatar({
   initials,
@@ -48,7 +48,7 @@ export function Avatar({
   );
 }
 
-export function RehabKidsLogo({ size = 60, withBg = true }: { size?: number; withBg?: boolean }) {
+export function MotionCareLogo({ size = 60, withBg = true }: { size?: number; withBg?: boolean }) {
   return (
     <View
       style={[
@@ -63,7 +63,7 @@ export function RehabKidsLogo({ size = 60, withBg = true }: { size?: number; wit
       ]}
     >
       <Image
-        source={rehabKidsLogo}
+        source={motionCareLogo}
         style={{ width: size - 4, height: size - 4, borderRadius: (size - 4) / 2 }}
         resizeMode="contain"
       />

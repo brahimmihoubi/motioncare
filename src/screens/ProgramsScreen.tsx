@@ -6,7 +6,7 @@ import { Screen } from '../types';
 import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, RehabKidsLogo } from '../components';
+import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 

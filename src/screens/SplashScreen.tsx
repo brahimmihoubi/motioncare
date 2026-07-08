@@ -6,7 +6,7 @@ import { Screen } from '../types';
 import { TEAL, TEAL_DARK, TEAL_LIGHT, BG_COLOR } from '../theme/colors';
 import { styles } from '../theme/styles';
 import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, RehabKidsLogo } from '../components';
+import { Avatar, MotionCareLogo } from '../components';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -137,10 +137,10 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
               },
             ]}
           />
-          <RehabKidsLogo size={90} />
+          <MotionCareLogo size={90} />
         </View>
 
-        <Text style={styles.splashTitle}>RehabKids</Text>
+        <Text style={styles.splashTitle}>MotionCare</Text>
         <Text style={styles.splashSubtitle}>Move · Play · Heal · Grow</Text>
       </Animated.View>
 
