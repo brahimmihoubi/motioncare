@@ -92,7 +92,6 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
 
   const handleNext = () => {
     if (slide < ONBOARDING_SLIDES.length - 1) {
-  const { styles, colors } = useTheme();
       scrollViewRef.current?.scrollTo({
         x: (slide + 1) * SCREEN_WIDTH,
         animated: true,
@@ -105,7 +104,6 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
 
   const handleBack = () => {
     if (slide > 0) {
-  const { styles, colors } = useTheme();
       scrollViewRef.current?.scrollTo({
         x: (slide - 1) * SCREEN_WIDTH,
         animated: true,
@@ -146,7 +144,6 @@ export default function OnboardingScreen({ onFinish, onSkip }: { onFinish: () =>
               const x = event.nativeEvent.contentOffset.x;
               const index = Math.round(x / SCREEN_WIDTH);
               if (index !== slide && index >= 0 && index < ONBOARDING_SLIDES.length) {
-  const { styles, colors } = useTheme();
                 setSlide(index);
               }
             },

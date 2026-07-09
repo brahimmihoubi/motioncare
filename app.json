@@ -18,6 +18,9 @@
     },
     "web": {
       "favicon": "./assets/MotionCare_logo.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
