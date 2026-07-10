@@ -3,14 +3,44 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAr
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
 import { Screen } from '../types';
-import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
 import { Avatar, MotionCareLogo } from '../components';
 import { useTheme } from '../theme/ThemeContext';
+import { DataService } from '../services/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function DashboardScreen({
+  onNavigate,
+  onLogout,
+}: {
+  onNavigate: (s: Screen) => void;
+  onLogout?: () => void;
+}) {
   const { styles, colors } = useTheme();
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
+  const [recentPatients, setRecentPatients] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const [statsData, patientsData] = await Promise.all([
+          DataService.getDashboardStats(),
+          DataService.getPatients()
+        ]);
+        setStats(statsData.data);
+        setRecentPatients(Array.isArray(patientsData.data) ? patientsData.data : []);
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadData();
+  }, []);
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.appHeader}>
@@ -33,17 +63,17 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
           <View style={styles.statsCardGrid}>
             <View style={styles.statsCardCol}>
               <Text style={styles.statsCardLabel}>Total Patients</Text>
-              <Text style={styles.statsCardVal}>96</Text>
-              <Text style={styles.statsCardSub}>↑ 4 new this month</Text>
+              <Text style={styles.statsCardVal}>{stats?.totalPatients || 0}</Text>
+              <Text style={styles.statsCardSub}>Active base</Text>
             </View>
             <View style={styles.dividerVal} />
             <View style={styles.statsCardCol}>
-              <Text style={styles.statsCardLabel}>Satisfaction</Text>
-              <Text style={styles.statsCardVal}>98%</Text>
-              <Text style={styles.statsCardSub}>↑ 2% from last month</Text>
+              <Text style={styles.statsCardLabel}>Sessions</Text>
+              <Text style={styles.statsCardVal}>{stats?.totalSessions || 0}</Text>
+              <Text style={styles.statsCardSub}>{stats?.complianceRate || 0}% compl.</Text>
             </View>
             <View style={styles.starCircle}>
-              <Star size={20} color="#FFD700" fill="#FFD700" />
+              <Activity size={20} color={colors.teal} />
             </View>
           </View>
         </View>
@@ -58,18 +88,18 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
 
         {/* Patients mini list */}
         <View style={styles.dashboardList}>
-          {patients.slice(0, 4).map((p) => (
+          {recentPatients.slice(0, 4).map((p: any) => (
             <TouchableOpacity
-              key={p.id}
+              key={p._id || p.id}
               onPress={() => onNavigate("patient-detail")}
               style={styles.patientListItem}
               activeOpacity={0.7}
             >
-              <Avatar initials={p.avatar} color={p.color} size="md" />
+              <Avatar initials={p.name?.substring(0, 2).toUpperCase() || 'P'} color={colors.teal} size="md" />
               <View style={styles.patientListMeta}>
                 <Text style={styles.patientListName}>{p.name}</Text>
                 <Text style={styles.patientListCondition} numberOfLines={1}>
-                  {p.condition}
+                  {p.condition || 'General'}
                 </Text>
               </View>
               <View style={styles.patientListEnd}>
@@ -87,13 +117,18 @@ export default function DashboardScreen({ onNavigate }: { onNavigate: (s: Screen
                       { color: p.status === "Active" ? colors.teal : "#4CAF50" },
                     ]}
                   >
-                    {p.status}
+                    {p.status || 'Active'}
                   </Text>
                 </View>
-                <Text style={styles.patientListTime}>{p.lastVisit}</Text>
+                <Text style={styles.patientListTime}>
+                  {p.lastSessionDate ? new Date(p.lastSessionDate).toLocaleDateString() : 'New'}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}
+          {recentPatients.length === 0 && !isLoading && (
+             <Text style={{ textAlign: 'center', color: '#718096', padding: 20 }}>No patients found.</Text>
+          )}
         </View>
 
         <TouchableOpacity

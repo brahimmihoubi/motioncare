@@ -13,8 +13,15 @@ import {
 import { ChevronLeft, User, Mail, Lock, Building, FileCheck } from 'lucide-react-native';
 import { Screen } from '../types';
 import { useTheme } from '../theme/ThemeContext';
+import { AuthService } from '../services/api';
 
-export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function SignUpScreen({
+  onNavigate,
+  onRegistrationSuccess,
+}: {
+  onNavigate: (s: Screen) => void;
+  onRegistrationSuccess?: () => void;
+}) {
   const { styles, colors } = useTheme();
   const localStyles = getLocalStyles(colors);
   const [name, setName] = useState("");
@@ -22,10 +29,35 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
   const [password, setPassword] = useState("");
   const [clinic, setClinic] = useState("");
   const [license, setLicense] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSignUp = () => {
-    // In a real app, handle authentication and user creation here
-    onNavigate("dashboard");
+  const handleSignUp = async () => {
+    if (!name || !email || !password) {
+      setError('Please fill all required fields.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await AuthService.register({
+        name,
+        email,
+        password,
+        specialization: clinic || license || 'Doctor',
+      });
+      await AuthService.login({ email, password });
+      // Notify App.tsx to persist the registered flag and navigate
+      if (onRegistrationSuccess) {
+        onRegistrationSuccess();
+      } else {
+        onNavigate('dashboard');
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +72,7 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
             onPress={() => onNavigate("welcome")}
             style={localStyles.backButton}
           >
-            <ChevronLeft size={24} color="#1A1A2E" />
+            <ChevronLeft size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -54,6 +86,8 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
               Sign up to start managing your patients and rehabilitation programs.
             </Text>
           </View>
+
+          {error ? <Text style={{ color: 'red', marginBottom: 10, textAlign: 'center' }}>{error}</Text> : null}
 
           <View style={localStyles.formContainer}>
             <View style={localStyles.inputGroup}>
@@ -134,13 +168,14 @@ export default function SignUpScreen({ onNavigate }: { onNavigate: (s: Screen) =
             style={localStyles.submitButton}
             activeOpacity={0.8}
             onPress={handleSignUp}
+            disabled={loading}
           >
-            <Text style={localStyles.submitButtonText}>Create Account</Text>
+            <Text style={localStyles.submitButtonText}>{loading ? 'Creating...' : 'Create Account'}</Text>
           </TouchableOpacity>
           
           <View style={localStyles.footer}>
             <Text style={localStyles.footerText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => onNavigate("welcome")}>
+            <TouchableOpacity onPress={() => onNavigate("login")}>
               <Text style={localStyles.footerLink}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -175,7 +210,7 @@ const getLocalStyles = (colors: any) => StyleSheet.create({
   title: {
     fontSize: 28,
     fontFamily: "Poppins_800ExtraBold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginBottom: 8,
   },
   subtitle: {
@@ -194,7 +229,7 @@ const getLocalStyles = (colors: any) => StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1A1A2E",
+    color: colors.text,
     marginLeft: 4,
   },
   inputWrapper: {
@@ -212,7 +247,7 @@ const getLocalStyles = (colors: any) => StyleSheet.create({
     marginLeft: 12,
     fontSize: 15,
     fontFamily: "Poppins_500Medium",
-    color: "#1A1A2E",
+    color: colors.text,
   },
   submitButton: {
     backgroundColor: colors.teal,

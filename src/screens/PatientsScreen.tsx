@@ -1,25 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Image, Dimensions, Animated, Easing, Platform, StatusBar } from 'react-native';
-import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
-import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
-import { Screen } from '../types';
-import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, MotionCareLogo } from '../components';
+import React, { useState, useEffect } from 'react';
+import { Text, View, ScrollView, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { ChevronRight, Search, Plus } from 'lucide-react-native';
+import { NavigateFn } from '../types';
+import { Avatar } from '../components';
 import { useTheme } from '../theme/ThemeContext';
+import { DataService } from '../services/api';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function PatientsScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   const { styles, colors } = useTheme();
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState("All");
+  
+  const [patientsList, setPatientsList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filtered = patients.filter((p) => {
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await DataService.getPatients();
+        // Assuming DataService returns the raw array or an object where data is the array
+        setPatientsList(Array.isArray(response.data) ? response.data : []);
+      } catch (err) {
+        console.error("Failed to load patients", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPatients();
+  }, []);
+
+  const filtered = patientsList.filter((p) => {
+    const pName = p.name || '';
+    const pNotes = p.notes || '';
     const matchesQuery =
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.condition.toLowerCase().includes(query.toLowerCase());
+      pName.toLowerCase().includes(query.toLowerCase()) ||
+      pNotes.toLowerCase().includes(query.toLowerCase());
     if (tab === "All") return matchesQuery;
-    return matchesQuery && p.status === tab;
+    // Map backend data to active/completed if possible, else just show all for now
+    return matchesQuery;
   });
 
   return (
@@ -27,7 +45,7 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen)
       <View style={styles.patientsHeaderContainer}>
         <View style={styles.patientsHeaderRow}>
           <Text style={styles.titleText}>Patients</Text>
-          <TouchableOpacity style={styles.addBtnContainer}>
+          <TouchableOpacity style={styles.addBtnContainer} onPress={() => onNavigate("add-patient")}>
             <Plus size={18} color={colors.teal} />
           </TouchableOpacity>
         </View>
@@ -65,29 +83,35 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: (s: Screen)
 
         {/* Detailed patient list */}
         <View style={styles.patientGrid}>
-          {filtered.map((p) => (
-            <TouchableOpacity
-              key={p.id}
-              onPress={() => onNavigate("patient-detail")}
-              style={styles.patientGridCard}
-              activeOpacity={0.7}
-            >
-              <Avatar initials={p.avatar} color={p.color} size="lg" />
-              <View style={styles.patientGridMeta}>
-                <Text style={styles.patientListNameLarge}>{p.name}</Text>
-                <Text style={styles.patientListConditionLarge}>{p.condition}</Text>
-                <View style={styles.patientGridProgressRow}>
-                  <View style={styles.progressBarBg}>
-                    <View
-                      style={[styles.progressBarFill, { width: `${p.completed}%` as any, backgroundColor: colors.teal }]}
-                    />
+          {isLoading ? (
+            <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>Loading patients...</Text>
+          ) : filtered.length === 0 ? (
+            <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>No patients found.</Text>
+          ) : (
+            filtered.map((p) => (
+              <TouchableOpacity
+                key={p.id}
+                onPress={() => onNavigate('patient-detail', { patientId: p.id })}
+                style={styles.patientGridCard}
+                activeOpacity={0.7}
+              >
+                <Avatar initials={p.name?.substring(0, 2).toUpperCase() || 'P'} color={colors.teal} size="lg" />
+                <View style={styles.patientGridMeta}>
+                  <Text style={styles.patientListNameLarge}>{p.name}</Text>
+                  <Text style={styles.patientListConditionLarge}>Age: {p.age} {p.notes ? `| ${p.notes.substring(0,20)}...` : ''}</Text>
+                  <View style={styles.patientGridProgressRow}>
+                    <View style={styles.progressBarBg}>
+                      <View
+                        style={[styles.progressBarFill, { width: '0%', backgroundColor: colors.teal }]}
+                      />
+                    </View>
+                    <Text style={styles.progressPctText}>0%</Text>
                   </View>
-                  <Text style={styles.progressPctText}>{p.completed}%</Text>
                 </View>
-              </View>
-              <ChevronRight size={18} color="#CBD5E0" />
-            </TouchableOpacity>
-          ))}
+                <ChevronRight size={18} color="#CBD5E0" />
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

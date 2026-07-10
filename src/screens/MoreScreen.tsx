@@ -9,7 +9,13 @@ import { useTheme } from '../theme/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export default function MoreScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function MoreScreen({
+  onNavigate,
+  onLogout,
+}: {
+  onNavigate: (s: Screen) => void;
+  onLogout?: () => void;
+}) {
   const { styles, colors } = useTheme();
   const menuItems = [
     { icon: HomeIcon, label: "Dashboard", desc: "View your dashboard", screen: "dashboard" },
@@ -84,7 +90,17 @@ export default function MoreScreen({ onNavigate }: { onNavigate: (s: Screen) => 
         </View>
 
         {/* Logout Row */}
-        <TouchableOpacity style={styles.logoutRow} activeOpacity={0.7} onPress={() => onNavigate("welcome")}>
+        <TouchableOpacity
+          style={styles.logoutRow}
+          activeOpacity={0.7}
+          onPress={() => {
+            if (onLogout) {
+              onLogout();
+            } else {
+              onNavigate('welcome');
+            }
+          }}
+        >
           <View style={styles.logoutIconContainer}>
             <LogOut size={17} color="#FF6B6B" />
           </View>

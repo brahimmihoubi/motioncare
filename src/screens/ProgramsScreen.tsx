@@ -1,21 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Image, Dimensions, Animated, Easing, Platform, StatusBar } from 'react-native';
-import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
-import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
-import { Screen } from '../types';
-import { patients, programs, deviations, progressData, weeklyData } from '../data/mockData';
-import { Avatar, MotionCareLogo } from '../components';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { ChevronRight, Plus, Activity, Clock } from 'lucide-react-native';
+import { NavigateFn } from '../types';
 import { useTheme } from '../theme/ThemeContext';
+import { DataService } from '../services/api';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-export default function ProgramsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function ProgramsScreen({ onNavigate }: { onNavigate: NavigateFn }) {
   const { styles, colors } = useTheme();
+  const [tab, setTab] = useState("Active");
+  const [programsList, setProgramsList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchPrograms = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await DataService.getPrograms();
+      setProgramsList(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error("Failed to load programs", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPrograms();
+  }, [fetchPrograms]);
+
+  const filtered = programsList.filter((prog) => {
+    if (tab === "Active") return prog.active === 1 || prog.active === true;
+    if (tab === "Completed") return prog.active === 0 || prog.active === false;
+    return true; // Draft or All
+  });
+
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.detailHeader}>
         <Text style={[styles.titleText, { flex: 1, paddingLeft: 10 }]}>Programs</Text>
-        <TouchableOpacity style={styles.addBtnContainer}>
+        <TouchableOpacity style={styles.addBtnContainer} onPress={() => onNavigate("add-program")}>
           <Plus size={18} color={colors.teal} />
         </TouchableOpacity>
       </View>
@@ -23,12 +45,13 @@ export default function ProgramsScreen({ onNavigate }: { onNavigate: (s: Screen)
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollBody}>
         {/* Sub-tabs */}
         <View style={styles.tabsRow}>
-          {["Active", "Completed", "Draft"].map((t, idx) => (
+          {["Active", "Completed", "All"].map((t) => (
             <TouchableOpacity
               key={t}
-              style={[styles.tabBtn, idx === 0 && { backgroundColor: colors.teal }]}
+              onPress={() => setTab(t)}
+              style={[styles.tabBtn, tab === t && { backgroundColor: colors.teal }]}
             >
-              <Text style={[styles.tabBtnText, { color: idx === 0 ? "white" : "#8A94A6" }]}>
+              <Text style={[styles.tabBtnText, { color: tab === t ? "white" : "#8A94A6" }]}>
                 {t}
               </Text>
             </TouchableOpacity>
@@ -37,36 +60,37 @@ export default function ProgramsScreen({ onNavigate }: { onNavigate: (s: Screen)
 
         {/* Programs List */}
         <View style={styles.dashboardList}>
-          {programs.map((prog) => (
-            <TouchableOpacity
-              key={prog.id}
-              onPress={() => onNavigate("edit-program")}
-              style={styles.programItemCard}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.programIconBox, { backgroundColor: prog.color }]}>
-                <Text style={{ fontSize: 22 }}>{prog.icon}</Text>
-              </View>
-              <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={styles.programNameText}>{prog.name}</Text>
-                <Text style={styles.programPatientText}>Patient: {prog.patient}</Text>
-                <View style={styles.programDetailsRow}>
-                  <View style={styles.programMetaInline}>
-                    <Activity size={12} color={colors.teal} />
-                    <Text style={styles.programMetaText}>{prog.exercises} exercises</Text>
-                  </View>
-                  <View style={[styles.programMetaInline, { marginLeft: 15 }]}>
-                    <Clock size={12} color={colors.teal} />
-                    <Text style={styles.programMetaText}>{prog.weeks} weeks</Text>
+          {isLoading ? (
+            <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>Loading programs...</Text>
+          ) : filtered.length === 0 ? (
+            <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>No programs found. Tap + to create one.</Text>
+          ) : (
+            filtered.map((prog) => (
+              <TouchableOpacity
+                key={prog.id}
+                onPress={() => onNavigate('edit-program', { programId: prog.id })}
+                style={styles.programItemCard}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.programIconBox, { backgroundColor: prog.active ? 'rgba(0,229,255,0.15)' : 'rgba(0,0,0,0.05)' }]}>
+                  <Activity size={22} color={prog.active ? colors.teal : '#8A94A6'} />
+                </View>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <Text style={styles.programNameText}>{prog.name}</Text>
+                  <Text style={styles.programPatientText}>Patient: {prog.patientName || 'Unknown'}</Text>
+                  <View style={styles.programDetailsRow}>
+                    <View style={styles.programMetaInline}>
+                      <Activity size={12} color={colors.teal} />
+                      <Text style={styles.programMetaText}>{prog.exerciseCount || 0} exercises</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-              <ChevronRight size={18} color="#CBD5E0" />
-            </TouchableOpacity>
-          ))}
+                <ChevronRight size={18} color="#CBD5E0" />
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
-

@@ -13,4 +13,15 @@ export type Screen =
   | "more"
   | "settings"
   | "signup"
-  | "notifications";
+  | "login"
+  | "notifications"
+  | "add-patient"
+  | "add-program";
+
+export type NavParams = {
+  patientId?: number;
+  programId?: number;
+  [key: string]: any;
+};
+
+export type NavigateFn = (screen: Screen, params?: NavParams) => void;

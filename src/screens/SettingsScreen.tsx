@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Switch } from 'react-native';
-import { ChevronLeft, ChevronRight, User, Lock, Bell, Globe, Moon, Ruler, HelpCircle, FileText, Shield, Trash2 } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, User, Lock, Bell, Globe, Moon, Ruler, HelpCircle, FileText, Shield, Trash2, LogOut } from 'lucide-react-native';
 import { Screen } from '../types';
 import { useTheme } from '../theme/ThemeContext';
 
-export default function SettingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+export default function SettingsScreen({
+  onNavigate,
+  onLogout,
+}: {
+  onNavigate: (s: Screen) => void;
+  onLogout?: () => void;
+}) {
   const { styles, colors, theme, toggleTheme } = useTheme();
   const localStyles = getLocalStyles(colors);
   const [notifications, setNotifications] = useState(true);
@@ -13,11 +19,14 @@ export default function SettingsScreen({ onNavigate }: { onNavigate: (s: Screen)
     <Text style={localStyles.sectionTitle}>{title}</Text>
   );
 
-  const SettingItem = ({ icon: Icon, label, value, isToggle, toggleValue, onToggle, isDestructive }: any) => (
+  const SettingItem = ({ icon: Icon, label, value, isToggle, toggleValue, onToggle, isDestructive, onPress }: any) => (
     <TouchableOpacity 
       style={localStyles.settingItem} 
       activeOpacity={isToggle ? 1 : 0.7}
-      onPress={() => !isToggle && console.log(label)}
+      onPress={() => {
+        if (onPress) onPress();
+        else if (!isToggle) console.log(label);
+      }}
     >
       <View style={[localStyles.iconContainer, isDestructive && { backgroundColor: '#FFF1F0' }]}>
         <Icon size={18} color={isDestructive ? '#FF6B6B' : colors.teal} />
@@ -93,6 +102,13 @@ export default function SettingsScreen({ onNavigate }: { onNavigate: (s: Screen)
           <SectionHeader title="DANGER ZONE" />
           <View style={localStyles.card}>
             <SettingItem icon={Trash2} label="Delete Account" isDestructive />
+            <View style={localStyles.divider} />
+            <SettingItem
+              icon={LogOut}
+              label="Log Out"
+              isDestructive
+              onPress={() => onLogout && onLogout()}
+            />
           </View>
         </View>
 

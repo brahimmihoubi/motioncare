@@ -22,6 +22,11 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
   const dot2 = useRef(new Animated.Value(0)).current;
   const dot3 = useRef(new Animated.Value(0)).current;
 
+  const onDoneRef = useRef(onDone);
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
+
   useEffect(() => {
     // Logo entrance animation
     Animated.parallel([
@@ -96,7 +101,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
         d1Anim.stop();
         d2Anim.stop();
         d3Anim.stop();
-        onDone();
+        onDoneRef.current();
       });
     }, 2600);
 

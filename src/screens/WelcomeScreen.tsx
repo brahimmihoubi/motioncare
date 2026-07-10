@@ -32,7 +32,7 @@ export default function WelcomeScreen({ onNavigate }: { onNavigate: (s: Screen) 
         </Text>
 
         <TouchableOpacity
-          onPress={() => onNavigate("dashboard")}
+          onPress={() => onNavigate("signup")}
           style={[styles.ctaBtn, { backgroundColor: colors.card, width: "100%", height: 52 }]}
           activeOpacity={0.8}
         >
@@ -41,7 +41,7 @@ export default function WelcomeScreen({ onNavigate }: { onNavigate: (s: Screen) 
 
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
           <Text style={styles.welcomeSignIn}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => onNavigate("signup")}>
+          <TouchableOpacity onPress={() => onNavigate("login")}>
             <Text style={{ color: "white", fontFamily: "Poppins_700Bold", fontSize: 14 }}>Sign In</Text>
           </TouchableOpacity>
         </View>
