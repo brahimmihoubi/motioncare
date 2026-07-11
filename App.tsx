@@ -38,6 +38,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import AddPatientScreen from './src/screens/AddPatientScreen';
 import AddProgramScreen from './src/screens/AddProgramScreen';
 import { AuthService, setOnUnauthorized } from './src/services/api';
+import { socketService } from './src/services/socket';
 
 // AsyncStorage keys
 const KEY_ONBOARDING_DONE = 'mc_onboarding_done';
@@ -140,6 +141,19 @@ function AppContent() {
       });
     });
   }, []);
+
+  // Manage socket connection globally
+  useEffect(() => {
+    if (isAuthenticated) {
+      socketService.connect();
+    } else {
+      socketService.disconnect();
+    }
+    
+    return () => {
+      socketService.disconnect();
+    };
+  }, [isAuthenticated]);
 
   const renderScreen = () => {
     switch (screen) {

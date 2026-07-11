@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Image, Dimensions, Animated, Easing, Platform, StatusBar } from 'react-native';
-import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
-import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon, Bell, ChevronRight, ChevronLeft, Search, Star, Edit3, Plus, X, CheckCircle, Clock, Activity, LogOut, HelpCircle, Settings, ArrowRight, Calendar, Filter, Play, Minus, BarChart2 } from 'lucide-react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Bell, Activity } from 'lucide-react-native';
 import { Screen } from '../types';
 import { Avatar, MotionCareLogo } from '../components';
 import { useTheme } from '../theme/ThemeContext';
 import { DataService } from '../services/api';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { socketService } from '../services/socket';
 
 export default function DashboardScreen({
   onNavigate,
@@ -22,24 +20,43 @@ export default function DashboardScreen({
   const [stats, setStats] = useState<any>(null);
   const [recentPatients, setRecentPatients] = useState<any[]>([]);
 
+  const loadData = async () => {
+    try {
+      const [statsData, patientsData] = await Promise.all([
+        DataService.getDashboardStats(),
+        DataService.getPatients()
+      ]);
+      setStats(statsData.data);
+      setRecentPatients(Array.isArray(patientsData.data) ? patientsData.data : []);
+    } catch (err) {
+      console.error("Failed to load dashboard data", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setIsLoading(true);
-        const [statsData, patientsData] = await Promise.all([
-          DataService.getDashboardStats(),
-          DataService.getPatients()
-        ]);
-        setStats(statsData.data);
-        setRecentPatients(Array.isArray(patientsData.data) ? patientsData.data : []);
-      } catch (err) {
-        console.error("Failed to load dashboard data", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
+    setIsLoading(true);
     loadData();
+  }, []);
+
+  // Listen for real-time updates
+  useEffect(() => {
+    const handleUpdate = () => {
+      console.log('[Mobile] Real-time update received! Refreshing dashboard...');
+      loadData();
+    };
+
+    const events = [
+      'patient:created', 'patient:updated', 'patient:deleted',
+      'session:created', 'session:updated', 'session:deleted'
+    ];
+
+    events.forEach(event => socketService.on(event, handleUpdate));
+
+    return () => {
+      events.forEach(event => socketService.off(event, handleUpdate));
+    };
   }, []);
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -70,7 +87,7 @@ export default function DashboardScreen({
             <View style={styles.statsCardCol}>
               <Text style={styles.statsCardLabel}>Sessions</Text>
               <Text style={styles.statsCardVal}>{stats?.totalSessions || 0}</Text>
-              <Text style={styles.statsCardSub}>{stats?.complianceRate || 0}% compl.</Text>
+              <Text style={styles.statsCardSub}>{stats?.complianceRate || '0%'} compl.</Text>
             </View>
             <View style={styles.starCircle}>
               <Activity size={20} color={colors.teal} />
