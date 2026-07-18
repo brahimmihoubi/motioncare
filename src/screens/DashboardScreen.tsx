@@ -28,8 +28,13 @@ export default function DashboardScreen({
       ]);
       setStats(statsData.data);
       setRecentPatients(Array.isArray(patientsData.data) ? patientsData.data : []);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to load dashboard data", err);
+      // If auth failed (401) and the interceptor's refresh also failed,
+      // fall back to logout so the user is sent to login instead of stuck.
+      if (err?.response?.status === 401 && onLogout) {
+        onLogout();
+      }
     } finally {
       setIsLoading(false);
     }

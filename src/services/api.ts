@@ -27,17 +27,38 @@ api.interceptors.request.use(async (config) => {
 });
 
 // Add a response interceptor to handle 401 Unauthorized globally
-// If the token is stale/invalid, clear it so the app can redirect to login
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Clear the stale token
-      await AsyncStorage.removeItem('mc_doctor_token');
-      await AsyncStorage.removeItem('mc_doctor_profile');
-      // Notify app via a global callback if set
-      if (typeof onUnauthorized === 'function') {
-        onUnauthorized();
+    const originalRequest = error.config;
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = await AsyncStorage.getItem('mc_doctor_refresh_token');
+        if (refreshToken) {
+          // Backend expects { refreshToken } and returns { accessToken, refreshToken }
+          const res = await axios.post(`${getBaseUrl()}/auth/refresh`, { refreshToken });
+          const newAccessToken = res.data?.data?.accessToken;
+          const newRefreshToken = res.data?.data?.refreshToken;
+          if (newAccessToken) {
+            await AsyncStorage.setItem('mc_doctor_token', newAccessToken);
+            if (newRefreshToken) {
+              await AsyncStorage.setItem('mc_doctor_refresh_token', newRefreshToken);
+            }
+            api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+            return api(originalRequest);
+          }
+        }
+      } catch (refreshError) {
+        // Refresh failed, logout
+        await AsyncStorage.removeItem('mc_doctor_token');
+        await AsyncStorage.removeItem('mc_doctor_refresh_token');
+        await AsyncStorage.removeItem('mc_doctor_profile');
+        if (typeof onUnauthorized === 'function') {
+          onUnauthorized();
+        }
       }
     }
     return Promise.reject(error);
@@ -54,10 +75,12 @@ export const setOnUnauthorized = (cb: () => void) => {
 export const AuthService = {
   login: async (credentials: { email: string; password: string }) => {
     const response = await api.post('/auth/doctor/login', credentials);
-    // Backend returns { success: true, data: { user, token } }
-    const { token, user } = response.data.data || {};
+    const { token, refreshToken, user } = response.data.data || {};
     if (token) {
       await AsyncStorage.setItem('mc_doctor_token', token);
+      if (refreshToken) {
+        await AsyncStorage.setItem('mc_doctor_refresh_token', refreshToken);
+      }
       if (user) {
         await AsyncStorage.setItem('mc_doctor_profile', JSON.stringify(user));
       }
@@ -69,7 +92,14 @@ export const AuthService = {
     return response.data;
   },
   logout: async () => {
+    try {
+      const refreshToken = await AsyncStorage.getItem('mc_doctor_refresh_token');
+      if (refreshToken) {
+        await api.post('/auth/logout', { token: refreshToken });
+      }
+    } catch(e) {}
     await AsyncStorage.removeItem('mc_doctor_token');
+    await AsyncStorage.removeItem('mc_doctor_refresh_token');
     await AsyncStorage.removeItem('mc_doctor_profile');
   },
   getToken: async () => {
@@ -102,13 +132,20 @@ export const DataService = {
     const response = await api.post('/programs', programData);
     return response.data;
   },
-  // TODO: Create/Use actual doctor endpoints for these if needed, 
-  // but for now we'll just mock them since we don't have global routes for them in the doctor role.
   getRecentSessions: async (limit = 10) => {
-    return { data: [] }; // Mock for now until we add /sessions/recent for doctor
+    const response = await api.get(`/sessions/my?limit=${limit}`);
+    return response.data;
+  },
+  createSession: async (sessionData: any) => {
+    const response = await api.post('/sessions', sessionData);
+    return response.data;
+  },
+  getSessionById: async (id: number) => {
+    const response = await api.get(`/sessions/${id}`);
+    return response.data;
   },
   getWeeklyStats: async () => {
-    return { data: [] }; // Mock for now until we add /dashboard/weekly-stats for doctor
+    return { data: [] }; // Mock for now
   },
   getExercises: async () => {
     const response = await api.get('/exercises');
@@ -132,6 +169,46 @@ export const DataService = {
   },
   updateProgram: async (id: number, data: { name?: string; active?: boolean; exercises?: any[] }) => {
     const response = await api.put(`/programs/${id}`, data);
+    return response.data;
+  }
+};
+
+// Exercise Request Services
+export const ExerciseRequestService = {
+  getMyRequests: async () => {
+    const response = await api.get('/exercise-requests/my');
+    return response.data;
+  },
+  submitRequest: async (data: { name: string, description: string, reference_link?: string }) => {
+    const response = await api.post('/exercise-requests', data);
+    return response.data;
+  }
+};
+
+// Exoskeleton Control Services
+export const ExoskeletonService = {
+  getSessionState: async (sessionId: number) => {
+    const response = await api.get(`/exoskeleton/session/${sessionId}/state`);
+    return response.data;
+  },
+  startCountdown: async (sessionId: number) => {
+    const response = await api.post(`/exoskeleton/session/${sessionId}/countdown`);
+    return response.data;
+  },
+  pauseSession: async (sessionId: number) => {
+    const response = await api.post(`/exoskeleton/session/${sessionId}/pause`);
+    return response.data;
+  },
+  resumeSession: async (sessionId: number) => {
+    const response = await api.post(`/exoskeleton/session/${sessionId}/resume`);
+    return response.data;
+  },
+  stopSession: async (sessionId: number) => {
+    const response = await api.post(`/exoskeleton/session/${sessionId}/stop`);
+    return response.data;
+  },
+  emergencyStop: async (sessionId: number) => {
+    const response = await api.post(`/exoskeleton/session/${sessionId}/emergency-stop`);
     return response.data;
   }
 };

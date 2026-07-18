@@ -16,7 +16,10 @@ export type Screen =
   | "login"
   | "notifications"
   | "add-patient"
-  | "add-program";
+  | "add-program"
+  | "session-history"
+  | "exercise-request"
+  | "live-session";
 
 export type NavParams = {
   patientId?: number;

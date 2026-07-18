@@ -37,8 +37,12 @@ import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import AddPatientScreen from './src/screens/AddPatientScreen';
 import AddProgramScreen from './src/screens/AddProgramScreen';
-import { AuthService, setOnUnauthorized } from './src/services/api';
+import SessionHistoryScreen from './src/screens/SessionHistoryScreen';
+import ExerciseRequestScreen from './src/screens/ExerciseRequestScreen';
+import LiveSessionScreen from './src/screens/LiveSessionScreen';
+import { AuthService, setOnUnauthorized, api, API_URL } from './src/services/api';
 import { socketService } from './src/services/socket';
+import axios from 'axios';
 
 // AsyncStorage keys
 const KEY_ONBOARDING_DONE = 'mc_onboarding_done';
@@ -59,26 +63,76 @@ function AppContent() {
   };
   const { theme, colors, styles } = useTheme();
 
+  // Register the global 401 handler IMMEDIATELY (not in useEffect)
+  // so it's available before any child component's effects fire API calls.
+  // useCallback-like stable ref pattern via module-level setter.
+  const doLogout = React.useCallback(() => {
+    AuthService.logout().then(() => {
+      setIsAuthenticated(false);
+      setScreen('login');
+    });
+  }, []);
+
+  // Register the global unauthorized handler synchronously on first render
+  React.useMemo(() => { setOnUnauthorized(doLogout); }, [doLogout]);
+
   /**
-   * On mount: check AsyncStorage for token, onboarding flag, and
-   * registered flag to decide which screen follows the splash.
+   * On mount: validate token, attempt proactive refresh if needed,
+   * then decide which screen follows the splash.
    */
   useEffect(() => {
     const init = async () => {
       try {
-        const [token, obDone, reg] = await Promise.all([
-          AuthService.getToken(),
+        const [token, refreshToken, obDone, reg] = await Promise.all([
+          AsyncStorage.getItem('mc_doctor_token'),
+          AsyncStorage.getItem('mc_doctor_refresh_token'),
           AsyncStorage.getItem(KEY_ONBOARDING_DONE),
           AsyncStorage.getItem(KEY_REGISTERED),
         ]);
 
-        if (token) {
-          // Already logged in → go straight to dashboard after splash
-          setIsAuthenticated(true);
-        }
-
         if (obDone === 'true') setOnboardingDone(true);
         if (reg === 'true') setIsRegistered(true);
+
+        if (token) {
+          // Pre-load token into axios so it's set synchronously before
+          // the first API request fires (interceptor is async, this is sync).
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+          // Proactively try to refresh using the refresh token so the
+          // dashboard never hits a 401 on its first load.
+          if (refreshToken) {
+            try {
+              const res = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+              const newAccess = res.data?.data?.accessToken;
+              const newRefresh = res.data?.data?.refreshToken;
+              if (newAccess) {
+                await AsyncStorage.setItem('mc_doctor_token', newAccess);
+                if (newRefresh) await AsyncStorage.setItem('mc_doctor_refresh_token', newRefresh);
+                api.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`;
+              }
+            } catch {
+              // Refresh failed — keep using the existing token; the
+              // 401 interceptor will handle it if the token is expired.
+            }
+          }
+          setIsAuthenticated(true);
+        } else if (refreshToken) {
+          // No access token but have refresh token → try to restore session
+          try {
+            const res = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+            const newAccess = res.data?.data?.accessToken;
+            const newRefresh = res.data?.data?.refreshToken;
+            if (newAccess) {
+              await AsyncStorage.setItem('mc_doctor_token', newAccess);
+              if (newRefresh) await AsyncStorage.setItem('mc_doctor_refresh_token', newRefresh);
+              api.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`;
+              setIsAuthenticated(true);
+            }
+          } catch {
+            // Both tokens invalid — stay unauthenticated
+            await AsyncStorage.multiRemove(['mc_doctor_token', 'mc_doctor_refresh_token', 'mc_doctor_profile']);
+          }
+        }
       } catch (e) {
         console.warn('Failed to read AsyncStorage during init', e);
       } finally {
@@ -132,15 +186,7 @@ function AppContent() {
     setScreen('login'); // After logout always go to login (registration already done)
   };
 
-  // Register the global 401 handler so any stale-token request auto-logs out
-  useEffect(() => {
-    setOnUnauthorized(() => {
-      AuthService.logout().then(() => {
-        setIsAuthenticated(false);
-        setScreen('login');
-      });
-    });
-  }, []);
+  // Global 401 handler is now registered via useMemo above (synchronous).
 
   // Manage socket connection globally
   useEffect(() => {
@@ -225,6 +271,15 @@ function AppContent() {
 
       case 'add-program':
         return <AddProgramScreen onNavigate={navigate} />;
+
+      case 'session-history':
+        return <SessionHistoryScreen onNavigate={navigate} />;
+
+      case 'exercise-request':
+        return <ExerciseRequestScreen onNavigate={navigate} />;
+
+      case 'live-session':
+        return <LiveSessionScreen onNavigate={navigate} sessionId={navParams.sessionId} />;
 
       default:
         return <DashboardScreen onNavigate={navigate} onLogout={handleLogout} />;

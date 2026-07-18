@@ -19,6 +19,8 @@ export default function MoreScreen({
   const { styles, colors } = useTheme();
   const menuItems = [
     { icon: HomeIcon, label: "Dashboard", desc: "View your dashboard", screen: "dashboard" },
+    { icon: Clock, label: "Session History", desc: "View all past sessions", screen: "session-history" },
+    { icon: Plus, label: "Request Exercise", desc: "Submit a new custom exercise to admin", screen: "exercise-request" },
     { icon: Bell, label: "Notifications", desc: "Manage alerts", screen: "notifications" },
     { icon: BarChart2, label: "Analytics", desc: "View reports", screen: "progress" },
     { icon: HelpCircle, label: "Help & Support", desc: "Get assistance", screen: "welcome" },

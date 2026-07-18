@@ -4,8 +4,10 @@
  */
 
 import { io, Socket } from 'socket.io-client';
+import { API_URL } from './api';
 
-const SOCKET_URL = 'http://localhost:5000'; // Note: For Android Emulator, this might need to be 10.0.2.2 or the computer's local IP address if running on a real device.
+// Derive the socket server URL from the API URL (strip the /api suffix)
+const SOCKET_URL = API_URL.replace('/api', '');
 
 class SocketService {
   private socket: Socket | null = null;
@@ -36,6 +38,12 @@ class SocketService {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
+    }
+  }
+
+  emit(event: string, ...args: any[]) {
+    if (this.socket) {
+      this.socket.emit(event, ...args);
     }
   }
 
