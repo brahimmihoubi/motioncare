@@ -15,12 +15,10 @@ export const getGlobalStyles = (colors: ThemeColors) => StyleSheet.create({
   safeContainer: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   safeContainerWhite: {
     flex: 1,
     backgroundColor: colors.card,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollBody: {
     flex: 1,

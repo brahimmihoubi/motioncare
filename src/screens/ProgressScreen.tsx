@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Dimensions, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import Svg, { Circle, Path, Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { ChevronRight, Filter } from 'lucide-react-native';
 import { Avatar } from '../components';

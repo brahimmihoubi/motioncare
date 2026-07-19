@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Bell, Activity } from 'lucide-react-native';
 import { Screen } from '../types';
 import { Avatar, MotionCareLogo } from '../components';

@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { ChevronRight, Search, Plus } from 'lucide-react-native';
 import { NavigateFn } from '../types';
 import { Avatar } from '../components';

@@ -1,7 +1,7 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, ScrollView, TouchableOpacity, SafeAreaView,
-  ActivityIndicator, Alert, TextInput, Modal, FlatList
+  Text, View, ScrollView, TouchableOpacity, ActivityIndicator, Alert, TextInput, Modal, FlatList
 } from 'react-native';
 import { ChevronLeft, Plus, Minus, Check, X, Save } from 'lucide-react-native';
 import { NavigateFn } from '../types';

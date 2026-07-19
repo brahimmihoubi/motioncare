@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { ChevronLeft, ChevronRight, Edit3, Activity, User, Clock, CheckCircle } from 'lucide-react-native';
 import { NavigateFn } from '../types';

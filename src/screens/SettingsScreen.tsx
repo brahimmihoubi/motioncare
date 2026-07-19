@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { ChevronLeft, ChevronRight, User, Lock, Bell, Globe, Moon, Ruler, HelpCircle, FileText, Shield, Trash2, LogOut } from 'lucide-react-native';
 import { Screen } from '../types';
 import { useTheme } from '../theme/ThemeContext';

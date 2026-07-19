@@ -316,6 +316,8 @@ function AppContent() {
   );
 }
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Poppins_100Thin,
@@ -332,8 +334,10 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { ChevronLeft, Calendar, Clock, CheckCircle, AlertTriangle, Activity } from 'lucide-react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { Screen } from '../types';

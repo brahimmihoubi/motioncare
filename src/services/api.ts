@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Use the local network IP so physical devices on the same Wi-Fi can reach the backend
-export const API_URL = 'http://192.168.100.8:5000/api';
+export const API_URL = 'http://172.16.3.204:5000/api';
 
 const getBaseUrl = () => {
   // 10.0.2.2 works for Android Emulator, but real IP works for both physical devices and emulators

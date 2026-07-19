@@ -1,5 +1,6 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { ChevronLeft, Send, CheckCircle, Clock } from 'lucide-react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { Screen } from '../types';
@@ -156,7 +157,7 @@ export default function ExerciseRequestScreen({ onNavigate }: { onNavigate: (s: 
             requests.map(req => (
               <View key={req.id} style={{ backgroundColor: colors.card, borderRadius: 20, marginHorizontal: 20, marginBottom: 16, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.03, shadowRadius: 8, elevation: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                  <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 16, color: colors.text, flex: 1 }}>{req.name}</Text>
+                <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 16, color: colors.text, flex: 1 }}>{req.name || req.exercise_name || 'Exercise Request'}</Text>
                   <View style={{ backgroundColor: getStatusColor(req.status) + '20', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 }}>
                     <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 10, color: getStatusColor(req.status), textTransform: 'uppercase' }}>
                       {req.status}
