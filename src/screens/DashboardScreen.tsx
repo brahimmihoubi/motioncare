@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Bell, Activity } from 'lucide-react-native';
 import { Screen } from '../types';
-import { Avatar, MotionCareLogo } from '../components';
+import { Avatar, MotionCareLogo, ShimmerPlaceholder } from '../components';
 import { useTheme } from '../theme/ThemeContext';
 import { DataService } from '../services/api';
 import { socketService } from '../services/socket';
@@ -86,13 +86,21 @@ export default function DashboardScreen({
           <View style={styles.statsCardGrid}>
             <View style={styles.statsCardCol}>
               <Text style={styles.statsCardLabel}>Total Patients</Text>
-              <Text style={styles.statsCardVal}>{stats?.totalPatients || 0}</Text>
+              {isLoading ? (
+                <ShimmerPlaceholder style={{ width: 40, height: 32, borderRadius: 4, marginVertical: 4 }} />
+              ) : (
+                <Text style={styles.statsCardVal}>{stats?.totalPatients || 0}</Text>
+              )}
               <Text style={styles.statsCardSub}>Active base</Text>
             </View>
             <View style={styles.dividerVal} />
             <View style={styles.statsCardCol}>
               <Text style={styles.statsCardLabel}>Sessions</Text>
-              <Text style={styles.statsCardVal}>{stats?.totalSessions || 0}</Text>
+              {isLoading ? (
+                <ShimmerPlaceholder style={{ width: 40, height: 32, borderRadius: 4, marginVertical: 4 }} />
+              ) : (
+                <Text style={styles.statsCardVal}>{stats?.totalSessions || 0}</Text>
+              )}
               <Text style={styles.statsCardSub}>{stats?.complianceRate || '0%'} compl.</Text>
             </View>
             <View style={styles.starCircle}>
@@ -111,46 +119,64 @@ export default function DashboardScreen({
 
         {/* Patients mini list */}
         <View style={styles.dashboardList}>
-          {recentPatients.slice(0, 4).map((p: any) => (
-            <TouchableOpacity
-              key={p._id || p.id}
-              onPress={() => onNavigate("patient-detail")}
-              style={styles.patientListItem}
-              activeOpacity={0.7}
-            >
-              <Avatar initials={p.name?.substring(0, 2).toUpperCase() || 'P'} color={colors.teal} size="md" />
-              <View style={styles.patientListMeta}>
-                <Text style={styles.patientListName}>{p.name}</Text>
-                <Text style={styles.patientListCondition} numberOfLines={1}>
-                  {p.condition || 'General'}
-                </Text>
-              </View>
-              <View style={styles.patientListEnd}>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    {
-                      backgroundColor: p.status === "Active" ? colors.tealLight : "#F0FFF4",
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.statusBadgeText,
-                      { color: p.status === "Active" ? colors.teal : "#4CAF50" },
-                    ]}
-                  >
-                    {p.status || 'Active'}
-                  </Text>
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <View key={`shimmer-${index}`} style={styles.patientListItem}>
+                <ShimmerPlaceholder style={{ width: 40, height: 40, borderRadius: 20 }} />
+                <View style={[styles.patientListMeta, { justifyContent: 'center' }]}>
+                  <ShimmerPlaceholder style={{ width: 120, height: 16, borderRadius: 4, marginBottom: 8 }} />
+                  <ShimmerPlaceholder style={{ width: 80, height: 12, borderRadius: 4 }} />
                 </View>
-                <Text style={styles.patientListTime}>
-                  {p.lastSessionDate ? new Date(p.lastSessionDate).toLocaleDateString() : 'New'}
-                </Text>
+                <View style={styles.patientListEnd}>
+                  <ShimmerPlaceholder style={{ width: 50, height: 24, borderRadius: 12, marginBottom: 4 }} />
+                  <ShimmerPlaceholder style={{ width: 40, height: 12, borderRadius: 4 }} />
+                </View>
               </View>
-            </TouchableOpacity>
-          ))}
-          {recentPatients.length === 0 && !isLoading && (
-             <Text style={{ textAlign: 'center', color: '#718096', padding: 20 }}>No patients found.</Text>
+            ))
+          ) : (
+            <>
+              {recentPatients.slice(0, 4).map((p: any) => (
+                <TouchableOpacity
+                  key={p._id || p.id}
+                  onPress={() => onNavigate("patient-detail")}
+                  style={styles.patientListItem}
+                  activeOpacity={0.7}
+                >
+                  <Avatar initials={p.name?.substring(0, 2).toUpperCase() || 'P'} color={colors.teal} size="md" />
+                  <View style={styles.patientListMeta}>
+                    <Text style={styles.patientListName}>{p.name}</Text>
+                    <Text style={styles.patientListCondition} numberOfLines={1}>
+                      {p.condition || 'General'}
+                    </Text>
+                  </View>
+                  <View style={styles.patientListEnd}>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        {
+                          backgroundColor: p.status === "Active" ? colors.tealLight : "#F0FFF4",
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.statusBadgeText,
+                          { color: p.status === "Active" ? colors.teal : "#4CAF50" },
+                        ]}
+                      >
+                        {p.status || 'Active'}
+                      </Text>
+                    </View>
+                    <Text style={styles.patientListTime}>
+                      {p.lastSessionDate ? new Date(p.lastSessionDate).toLocaleDateString() : 'New'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+              {recentPatients.length === 0 && (
+                <Text style={{ textAlign: 'center', color: '#718096', padding: 20 }}>No patients found.</Text>
+              )}
+            </>
           )}
         </View>
 

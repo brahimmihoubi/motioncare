@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { ChevronRight, Search, Plus } from 'lucide-react-native';
 import { NavigateFn } from '../types';
-import { Avatar } from '../components';
+import { Avatar, ShimmerPlaceholder } from '../components';
 import { useTheme } from '../theme/ThemeContext';
 import { DataService } from '../services/api';
 
@@ -85,7 +85,20 @@ export default function PatientsScreen({ onNavigate }: { onNavigate: NavigateFn 
         {/* Detailed patient list */}
         <View style={styles.patientGrid}>
           {isLoading ? (
-            <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>Loading patients...</Text>
+            Array.from({ length: 4 }).map((_, index) => (
+              <View key={`shimmer-p-${index}`} style={styles.patientGridCard}>
+                <ShimmerPlaceholder style={{ width: 48, height: 48, borderRadius: 24 }} />
+                <View style={styles.patientGridMeta}>
+                  <ShimmerPlaceholder style={{ width: 140, height: 18, borderRadius: 4, marginBottom: 8 }} />
+                  <ShimmerPlaceholder style={{ width: 100, height: 14, borderRadius: 4, marginBottom: 8 }} />
+                  <View style={styles.patientGridProgressRow}>
+                    <ShimmerPlaceholder style={{ width: '80%', height: 6, borderRadius: 3 }} />
+                    <ShimmerPlaceholder style={{ width: 24, height: 14, borderRadius: 2, marginLeft: 8 }} />
+                  </View>
+                </View>
+                <ShimmerPlaceholder style={{ width: 18, height: 18, borderRadius: 9 }} />
+              </View>
+            ))
           ) : filtered.length === 0 ? (
             <Text style={{ textAlign: 'center', color: colors.textSecondary, marginTop: 40 }}>No patients found.</Text>
           ) : (

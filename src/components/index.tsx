@@ -3,6 +3,10 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Screen } from '../types';
 import { useTheme } from '../theme/ThemeContext';
 import { Home as HomeIcon, Users as UsersIcon, LayoutGrid as LayoutIcon, TrendingUp as TrendIcon, MoreHorizontal as MoreIcon } from 'lucide-react-native';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
+import { LinearGradient } from 'expo-linear-gradient';
+
+export const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 
 const motionCareLogo = require('../../assets/MotionCare_logo.png');
 
