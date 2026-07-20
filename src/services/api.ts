@@ -107,9 +107,36 @@ export const AuthService = {
   }
 };
 
+const CACHE_PREFIX = 'mc_cache_';
+
+const apiGet = async (url: string) => {
+  try {
+    const response = await api.get(url);
+    try {
+      await AsyncStorage.setItem(`${CACHE_PREFIX}${url}`, JSON.stringify(response.data));
+    } catch (cacheError) {
+      console.warn('Error caching data for', url, cacheError);
+    }
+    return response;
+  } catch (error: any) {
+    if (!error.response) {
+      try {
+        const cachedData = await AsyncStorage.getItem(`${CACHE_PREFIX}${url}`);
+        if (cachedData) {
+          console.log(`Serving offline cache for ${url}`);
+          return { data: JSON.parse(cachedData) };
+        }
+      } catch (cacheError) {
+        console.warn('Error retrieving cache for', url, cacheError);
+      }
+    }
+    throw error;
+  }
+};
+
 export const DataService = {
   getPatients: async () => {
-    const response = await api.get('/patients');
+    const response = await apiGet('/patients');
     return response.data;
   },
   createPatient: async (patientData: any) => {
@@ -117,15 +144,15 @@ export const DataService = {
     return response.data;
   },
   getDashboardStats: async () => {
-    const response = await api.get('/dashboard/stats');
+    const response = await apiGet('/dashboard/stats');
     return response.data;
   },
   getProgressStats: async () => {
-    const response = await api.get('/dashboard/progress');
+    const response = await apiGet('/dashboard/progress');
     return response.data;
   },
   getPrograms: async () => {
-    const response = await api.get('/programs/my');
+    const response = await apiGet('/programs/my');
     return response.data;
   },
   createProgram: async (programData: any) => {
@@ -133,7 +160,7 @@ export const DataService = {
     return response.data;
   },
   getRecentSessions: async (limit = 10) => {
-    const response = await api.get(`/sessions/my?limit=${limit}`);
+    const response = await apiGet(`/sessions/my?limit=${limit}`);
     return response.data;
   },
   createSession: async (sessionData: any) => {
@@ -141,30 +168,30 @@ export const DataService = {
     return response.data;
   },
   getSessionById: async (id: number) => {
-    const response = await api.get(`/sessions/${id}`);
+    const response = await apiGet(`/sessions/${id}`);
     return response.data;
   },
   getWeeklyStats: async () => {
     return { data: [] }; // Mock for now
   },
   getExercises: async () => {
-    const response = await api.get('/exercises');
+    const response = await apiGet('/exercises');
     return response.data;
   },
   getPatientById: async (id: number) => {
-    const response = await api.get(`/patients/${id}`);
+    const response = await apiGet(`/patients/${id}`);
     return response.data;
   },
   getProgramsByPatient: async (patientId: number) => {
-    const response = await api.get(`/programs/patient/${patientId}`);
+    const response = await apiGet(`/programs/patient/${patientId}`);
     return response.data;
   },
   getActiveProgramByPatient: async (patientId: number) => {
-    const response = await api.get(`/programs/active/${patientId}`);
+    const response = await apiGet(`/programs/active/${patientId}`);
     return response.data;
   },
   getProgramById: async (id: number) => {
-    const response = await api.get(`/programs/${id}`);
+    const response = await apiGet(`/programs/${id}`);
     return response.data;
   },
   updateProgram: async (id: number, data: { name?: string; active?: boolean; exercises?: any[] }) => {
@@ -176,7 +203,7 @@ export const DataService = {
 // Exercise Request Services
 export const ExerciseRequestService = {
   getMyRequests: async () => {
-    const response = await api.get('/exercise-requests/my');
+    const response = await apiGet('/exercise-requests/my');
     return response.data;
   },
   submitRequest: async (data: { name: string, description: string, reference_link?: string }) => {
@@ -188,7 +215,7 @@ export const ExerciseRequestService = {
 // Exoskeleton Control Services
 export const ExoskeletonService = {
   getSessionState: async (sessionId: number) => {
-    const response = await api.get(`/exoskeleton/session/${sessionId}/state`);
+    const response = await apiGet(`/exoskeleton/session/${sessionId}/state`);
     return response.data;
   },
   startCountdown: async (sessionId: number) => {
