@@ -4,7 +4,7 @@ import { Screen, NavParams } from './src/types';
 import { BottomNav } from './src/components';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   useFonts,
   Poppins_100Thin,
@@ -316,7 +316,6 @@ function AppContent() {
   );
 }
 
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   const [fontsLoaded] = useFonts({

@@ -14,13 +14,19 @@
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/MotionCare_logo.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.motioncare"
     },
     "web": {
       "favicon": "./assets/MotionCare_logo.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3f10b8b6-2fd7-4c18-93d9-846be111ace5"
+      }
+    }
   }
 }
